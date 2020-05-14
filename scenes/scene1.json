@@ -1,0 +1,24 @@
+{
+    "sceneName": "BouncyScene",
+    "gobjects": [],
+    "spawners": [
+        {
+            "type": "BouncyImageSpawner",
+            "width": 128,
+            "height": 65,
+            "imgURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/DVD_logo.svg/320px-DVD_logo.svg.png",
+            "quantity": 10,
+            "name": "dvd",
+            "speed": 8
+        },
+        {
+            "type": "BouncyImageSpawner",
+            "width": 128,
+            "height": 70,
+            "imgURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Blu_ray_logo.png/320px-Blu_ray_logo.png",
+            "quantity": 10,
+            "name": "bd",
+            "speed": 8
+        }
+    ]   
+}
