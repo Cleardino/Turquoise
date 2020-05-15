@@ -107,6 +107,7 @@ class TurquoiseRender {
     constructor(c, ctx) {
         this.c = c
         this.ctx = ctx
+        this.snapObjectsToPixel = true; //Use to ensure pixel art is always drawn correctly
     }
     draw(gameState) {
         this.ctx.clearRect(0, 0, this.c.width, this.c.height);
@@ -117,7 +118,11 @@ class TurquoiseRender {
 
             if (o.visibile) {
                 this.ctx.globalAlpha = o.opacity;
-                this.ctx.drawImage(o.img, o.x, o.y, o.width, o.height);
+                if (this.snapObjectsToPixel) {
+                    this.ctx.drawImage(o.img, Math.round(o.x), Math.round(o.y), o.width, o.height);
+                } else {
+                    this.ctx.drawImage(o.img, o.x, o.y, o.width, o.height);
+                }
                 this.ctx.globalAlpha = 1;
                 //ctx.globalCompositionOperation = "source-over";
             }
@@ -140,10 +145,25 @@ class TurquoiseInput {
         this.gameState = gameState;
 
         c.addEventListener('click', function(event) {
-            let xClicked = keepXWithinCanvas((event.pageX - c.offsetLeft));
-            let yClicked = keepYWithinCanvas((event.pageY - c.offsetTop));
-            
-            
+/*             let elem = event.target.getBoundingClientRect();
+            let xClicked = event.clientX - elem.left;
+            let yClicked = event.clientY - elem.top;
+            xClicked = Math.floor((xClicked / (elem.width/c.width)));
+            yClicked = Math.floor((yClicked / (elem.height/c.height)));
+            xClicked = keepXWithinCanvas(xClicked);
+            yClicked = keepYWithinCanvas(yClicked); */
+            let xClicked = getXFromEvent(event);
+            let yClicked = getYFromEvent(event);
+
+            //console.log(xClicked);
+            //console.log(yClicked);
+            //console.log(elem.width);
+            //console.log(elem.height);
+            //console.log(c.width)
+            //console.log(c.height);
+            //console.log(event);
+            //console.log(innerWidth);
+            //console.log(innerHeight);
 
             //console.log(xClicked + "," + yClicked);
             
@@ -165,8 +185,8 @@ class TurquoiseInput {
         }, false);
 
         c.addEventListener('mousemove', function(event) {
-            hoverX = keepXWithinCanvas((event.pageX-8));
-            hoverY = keepYWithinCanvas((event.pageY-8));
+            hoverX = getXFromEvent(event);
+            hoverY = getYFromEvent(event);
             //console.log(this.hoverX);
             //console.log(this.hoverX+", "+this.hoverY);
         }, false);
@@ -356,7 +376,7 @@ class BouncyImage extends SpriteObject {
 }
 
 class BouncyImageSpawner {
-    constructor(width, height, imgURL, quantity = 10, name = "BouncyImage", speed = 8) {
+    constructor(width, height, imgURL, quantity = 10, name = "BouncyImage", speed = 1) {
         this.width = width;
         this.height = height;
         this.imgURL = imgURL;

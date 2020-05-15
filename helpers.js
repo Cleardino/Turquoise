@@ -28,4 +28,20 @@ function keepYWithinCanvas(yClicked) {
     return yClicked;
 }
 
+function getXFromEvent(event) {
+    let elem = event.target.getBoundingClientRect();
+    let xClicked = event.clientX - elem.left;
+    xClicked = Math.floor((xClicked / (elem.width/c.width)));
+    xClicked = keepXWithinCanvas(xClicked);
+    return xClicked;
+}
+
+function getYFromEvent(event) {
+    let elem = event.target.getBoundingClientRect();
+    let yClicked = event.clientY - elem.top;
+    yClicked = Math.floor((yClicked / (elem.height/c.height)));
+    yClicked = keepYWithinCanvas(yClicked);
+    return yClicked;
+}
+
 //should this be in a class,? not just loose
