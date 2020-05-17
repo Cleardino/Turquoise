@@ -7,19 +7,29 @@ html, body {
 
 
 canvas {
+    /*old
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
 
     image-rendering: optimizeSpeed;
     image-rendering: -o-crisp-edges;
-    -ms-interpolation-mode: nearest-neighbor;
+
+    -ms-interpolation-mode: nearest-neighbor;*/
+
+    /*trying new*/
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+
+
+    
 
     background-color: white;
     padding: 0;
     display: block;
     margin: 0 auto;
-    
+
 }
 
 
