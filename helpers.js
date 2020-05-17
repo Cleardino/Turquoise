@@ -9,6 +9,8 @@ function coordsWithinRectangle(coordX, coordY, rectLeftX, rectRightX, rectTopY, 
     }
 }
 
+//treating X & Y separately is so insane and will be fixed
+
 function keepXWithinCanvas(xClicked) {
     if (xClicked < 0) {
         xClicked = 0;
@@ -28,20 +30,26 @@ function keepYWithinCanvas(yClicked) {
     return yClicked;
 }
 
+
 function getXFromEvent(event) {
-    let elem = event.target.getBoundingClientRect();
-    let xClicked = event.clientX - elem.left;
-    xClicked = Math.floor((xClicked / (elem.width/c.width)));
-    xClicked = keepXWithinCanvas(xClicked);
+    //console.log(canvasScreenLeft);
+    //console.log(canvasScreenTop);
+    //console.log(canvasScreenHeight);
+    //console.log(canvasScreenWidth);
+    let xClicked = keepXWithinCanvas((Math.floor(((event.clientX - canvasPositionAndSizeInWindow.left) / (canvasPositionAndSizeInWindow.width/c.width)))));
+    //console.log(xClicked);
     return xClicked;
 }
 
 function getYFromEvent(event) {
-    let elem = event.target.getBoundingClientRect();
-    let yClicked = event.clientY - elem.top;
-    yClicked = Math.floor((yClicked / (elem.height/c.height)));
-    yClicked = keepYWithinCanvas(yClicked);
+    yClicked = keepYWithinCanvas(Math.floor(((event.clientY - canvasPositionAndSizeInWindow.top) / (canvasPositionAndSizeInWindow.height/c.height))));
+    //console.log(yClicked);
     return yClicked;
+}
+
+function getCoordsFromEvent(event) {
+    let elem = event.target.getBoundingClientRect();
+
 }
 
 //should this be in a class,? not just loose

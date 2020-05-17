@@ -1,3 +1,30 @@
+class XY {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    set(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    add(otherXY) {
+        this.x = this.x+otherXY.x;
+        this.y = this.y+otherXY.y;
+    }
+}
+
+class Velocity extends XY {
+    constructor(x, y) {
+        super(x, y);
+    }
+}
+
+class Position extends XY {
+    constructor(x, y) {
+        super(x, y);
+    }
+}
+
 class TurquoiseState {
     constructor() {
         this.scenes = [];
@@ -60,7 +87,7 @@ class TurquoiseState {
     //}
 
     update() {
-        for (i = 0; i < this.getGobjects().length; i++) {
+        for (let i = 0; i < this.getGobjects().length; i++) {
             this.getGobjects()[i].update();
             //console.log(gameState.getGobjects());
             if (this.getGobjects()[i].isRequestingDestroy()) {
@@ -111,7 +138,8 @@ class TurquoiseRender {
     }
     draw(gameState) {
         this.ctx.clearRect(0, 0, this.c.width, this.c.height);
-        for (i = 0; i < gameState.getGobjects().length; i++) {
+        //console.log(gameState.getGobjects().length);
+        for (let i = 0; i < gameState.getGobjects().length; i++) {
             
             //gameState.getGobjects()[i].draw();
             let o = gameState.getGobjects()[i];
@@ -119,9 +147,9 @@ class TurquoiseRender {
             if (o.visibile) {
                 this.ctx.globalAlpha = o.opacity;
                 if (this.snapObjectsToPixel) {
-                    this.ctx.drawImage(o.img, Math.round(o.x), Math.round(o.y), o.width, o.height);
+                    this.ctx.drawImage(o.img, Math.round(o.position.x), Math.round(o.position.y), o.width, o.height);
                 } else {
-                    this.ctx.drawImage(o.img, o.x, o.y, o.width, o.height);
+                    this.ctx.drawImage(o.img, o.position.x, o.position.y, o.width, o.height);
                 }
                 this.ctx.globalAlpha = 1;
                 //ctx.globalCompositionOperation = "source-over";
@@ -229,16 +257,14 @@ class TurquoiseInput {
 }
 
 class SpriteObject {
-    constructor(name, x, y, width, height, imgURL) {
+    constructor(name, position, width, height, imgURL) {
         this.name = name;
-        this.x = x;
-        this.y = y;
+        this.position = position;
         this.img = new Image();
         this.img.src = imgURL;
         this.width = width;
         this.height = height;
-        this.xspeed = 0;
-        this.yspeed = 0;
+        this.velocity = new Velocity(0,0);
         this.colour = "Black";
         this.opacity = 1;
         this.visible;
@@ -268,8 +294,7 @@ class SpriteObject {
         gameState.getGobjects
     }
     updatePosition() {
-        this.x = this.x + this.xspeed;
-        this.y = this.y + this.yspeed;
+        this.position.add(this.velocity);
     }
     updateFadeout() {
         if ((this.fadeOut == true) && (this.visibile)) {
@@ -297,7 +322,7 @@ class SpriteObject {
         }
     } */
     doCoordsCollideWithThis(xx, yy) {
-        if (coordsWithinRectangle(xx, yy, this.x, (this.x + (this.width)), this.y, (this.y + (this.height)))) {
+        if (coordsWithinRectangle(xx, yy, this.position.x, (this.position.x + (this.width)), this.position.y, (this.position.y + (this.height)))) {
             return true;
         }
         else {
@@ -341,6 +366,7 @@ class SpriteObject {
     }
     onClickOrTap() {
         this.startFadeout();
+        this.velocity.set(0,0);
     }
     isRequestingHoverhand() {
         return (this.hoverhand && this.interactable);
@@ -351,19 +377,19 @@ class SpriteObject {
 }
 
 class BouncyImage extends SpriteObject {
-    constructor(name, x, y, width, height, imgURL, speed = 8) {
-        super(name, x, y, width, height, imgURL);
-        this.xspeed = (Math.random() - 0.5) * speed;
-        this.yspeed = (Math.random() - 0.5) * speed;
+    constructor(name, coords, width, height, imgURL, speed = 8) {
+        super(name, coords, width, height, imgURL);
+        this.velocity.x = (Math.random() - 0.5) * speed;
+        this.velocity.y = (Math.random() - 0.5) * speed;
         this.hoverhand = true;
     }
 
     changeDirectionOnWallCollision() {
-        if (((this.x + this.width) > c.width) || (this.x < 0)) {
-            this.xspeed = -this.xspeed;
+        if (((this.position.x + this.width) > c.width) || (this.position.x < 0)) {
+            this.velocity.x = -this.velocity.x;
         }
-        if (((this.y + this.height) > c.height) || (this.y < 0)) {
-            this.yspeed = -this.yspeed;
+        if (((this.position.y + this.height) > c.height) || (this.position.y < 0)) {
+            this.velocity.y = -this.velocity.y;
         }
     }
 
@@ -376,7 +402,7 @@ class BouncyImage extends SpriteObject {
 }
 
 class BouncyImageSpawner {
-    constructor(width, height, imgURL, quantity = 10, name = "BouncyImage", speed = 1) {
+    constructor(width, height, imgURL, quantity = 10, name = "BouncyImage", speed = 2) {
         this.width = width;
         this.height = height;
         this.imgURL = imgURL;
@@ -386,14 +412,11 @@ class BouncyImageSpawner {
         this.c = c;
         this.spawned = [];
         this.speed = speed;
-
-        let x;
-        let y;
-        for (i = 0; i < this.quantity; i++) {
-            x = Math.random() * (canvasWidth - this.width);
-            y = Math.random() * (canvasHeight - this.height) ;
+        for (let i = 0; i < this.quantity; i++) {
+            let x = Math.random() * (canvasSize.width - this.width);
+            let y = Math.random() * (canvasSize.height - this.height) ;
             //turquoiseState.getCurrentScene().addGobjcet()
-            this.spawned.push(new BouncyImage(this.name+ i.toString(),x, y, this.width, this.height, this.imgURL, this.speed));
+            this.spawned.push(new BouncyImage(this.name+ i.toString(), new Position(x,y), this.width, this.height, this.imgURL, this.speed));
             //imageArray.push(new BouncyImage("dvd"+ i.toString(),x, y, dvdWidth, dvdHeight, "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/DVD_logo.svg/320px-DVD_logo.svg.png"));
 
         }

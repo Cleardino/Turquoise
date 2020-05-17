@@ -1,27 +1,17 @@
-c = document.getElementById("myCanvas");
+c = document.getElementById("TurquoiseCanvas");
 ctx = c.getContext("2d");
 
-var h = window.innerHeight;
-var w = window.innerWidth;
 
-//c.style = "height: 100%; width:auto; border:1px solid #000000;";
+//Global variables describing window size, canvas size, and how the canvas is being drawn in CSS
+var canvasSize = {width: c.width, height: c.height};
+var windowSize = {height: window.innerHeight, width: window.innerWidth};
+var canvasPositionAndSizeInWindow; // Will contain left, top, width, height
 
-//c.style = "width: 100%; border:1px solid #000000;";
-
-//c.style = "height: 100%";
-
-document.getElementById("myCanvas").style.width = 1000;
-
-var canvasWidth = c.width;
-var canvasHeight = c.height;
-var windowHeight;
-var windowWidth;
 
 var dvdWidth = 128;
 var dvdHeight = 65;
 var bdWidth = 128;
 var bdHeight = 70;
-var i; //im guessing this is a nightmare
 
 function run() {
     requestAnimationFrame(run);
@@ -34,15 +24,17 @@ function run() {
 }
 
 function scaleToWindow() {
-
-    var h = window.innerHeight;
-    var w = window.innerWidth;
-    canvasDivided = canvasWidth/canvasHeight;
-    windowDivided = w/h;
+    //console.log("helloworld");
+    windowSize = {height: window.innerHeight, width: window.innerWidth}
+    canvasDivided = canvasSize.width/canvasSize.height;
+    windowDivided = windowSize.width/windowSize.height;
     //console.log(h);
-    var hmm = (h/canvasHeight)*canvasWidth;
+    var hmm = (windowSize.height/canvasSize.height)*canvasSize.width;
     //console.log(canvasDivided);
     //console.log(windowDivided);
+
+    
+    //console.log(canvasScreenLeft);
 
     if (canvasDivided > windowDivided) {
         c.style = "width: 100%;"
@@ -50,6 +42,8 @@ function scaleToWindow() {
         c.style = "width: "+hmm.toString()+  "px;"
         //c.style = "width: 500px; border:1px solid #000000;"
     }
+    let elem = c.getBoundingClientRect();
+    canvasPositionAndSizeInWindow = {left: elem.left, top: elem.top, width: elem.width, height: elem.height }
 }
 
 
@@ -79,13 +73,10 @@ window.addEventListener("orientationchange", function() {
     scaleToWindow();
   });
 
-  window.addEventListener("resize", function() {
+window.addEventListener("resize", function() {
     scaleToWindow();
   });
 
-//window.oneresize = function() {scaleToWindow();};
-
-//window.addEventListener("resize", scaleToWindow());
 
 run();
 
