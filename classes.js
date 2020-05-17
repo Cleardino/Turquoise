@@ -182,18 +182,8 @@ class TurquoiseInput {
             yClicked = keepYWithinCanvas(yClicked); */
             let xClicked = getXFromEvent(event);
             let yClicked = getYFromEvent(event);
-
-            //console.log(xClicked);
-            //console.log(yClicked);
-            //console.log(elem.width);
-            //console.log(elem.height);
-            //console.log(c.width)
-            //console.log(c.height);
-            //console.log(event);
-            //console.log(innerWidth);
-            //console.log(innerHeight);
-
-            //console.log(xClicked + "," + yClicked);
+            console.log(xClicked);
+            console.log(yClicked);
             
             let clickActioned = false;
         
