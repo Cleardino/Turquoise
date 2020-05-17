@@ -42,8 +42,7 @@ function scaleToWindow() {
         c.style = "width: "+hmm.toString()+  "px;"
         //c.style = "width: 500px; border:1px solid #000000;"
     }
-    let elem = c.getBoundingClientRect();
-    canvasPositionAndSizeInWindow = {left: elem.left, top: elem.top, width: elem.width, height: elem.height }
+    updateGlobalCanvasPositionAndSizeCache();
 }
 
 
@@ -80,4 +79,9 @@ window.addEventListener("resize", function() {
 
 run();
 
+
+function updateGlobalCanvasPositionAndSizeCache() {
+    let elem = c.getBoundingClientRect();
+    canvasPositionAndSizeInWindow = { left: elem.left, top: elem.top, width: elem.width, height: elem.height };
+}
 

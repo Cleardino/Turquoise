@@ -180,9 +180,11 @@ class TurquoiseInput {
             yClicked = Math.floor((yClicked / (elem.height/c.height)));
             xClicked = keepXWithinCanvas(xClicked);
             yClicked = keepYWithinCanvas(yClicked); */
+            updateGlobalCanvasPositionAndSizeCache();
             let xClicked = getXFromEvent(event);
             let yClicked = getYFromEvent(event);
-            console.error(xClicked);
+            console.log(xClicked);
+            console.log(yClicked);
             
             let clickActioned = false;
         
