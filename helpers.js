@@ -1,7 +1,7 @@
 
 
-function coordsWithinRectangle(coordX, coordY, rectLeftX, rectRightX, rectTopY, rectBottomY) {
-    if (((coordX > rectLeftX) && (coordX < rectRightX)) && ((coordY > rectTopY) && (coordY < rectBottomY))) {
+function isPositionWithinRectangle(position, rectLeftX, rectRightX, rectTopY, rectBottomY) {
+    if (((position.x > rectLeftX) && (position.x < rectRightX)) && ((position.y > rectTopY) && (position.y < rectBottomY))) {
         return true;
     }
     else {
@@ -9,47 +9,36 @@ function coordsWithinRectangle(coordX, coordY, rectLeftX, rectRightX, rectTopY, 
     }
 }
 
-//treating X & Y separately is so insane and will be fixed
 
-function keepXWithinCanvas(xClicked) {
-    if (xClicked < 0) {
-        xClicked = 0;
+
+function positionWithinCanvas(x, y) {
+
+    if (x < 0) {
+        x = 0;
     }
-    if (xClicked > c.width) {
-        xClicked = c.width;
+    if (x > canvasSize.width) {
+        x = canvasSize.width;
     }
-    return xClicked;
-}
-function keepYWithinCanvas(yClicked) {
-    if (yClicked > c.height) {
-        yClicked = c.height;
+    if (y < 0) {
+        y = 0;
     }
-    if (yClicked < 0) {
-        yClicked = 0;
+    if (x > canvasSize.height) {
+        y = canvasSize.height;
     }
-    return yClicked;
+    return new Position(x, y);
 }
 
 
-function getXFromEvent(event) {
-    //console.log(canvasScreenLeft);
-    //console.log(canvasScreenTop);
-    //console.log(canvasScreenHeight);
-    //console.log(canvasScreenWidth);
-    let xClicked = keepXWithinCanvas((Math.floor(((event.clientX - canvasPositionAndSizeInWindow.left) / (canvasPositionAndSizeInWindow.width/c.width)))));
-    //console.log(xClicked);
-    return xClicked;
+
+
+function getPositionFromEvent(event) {
+    return positionWithinCanvas((Math.floor(((event.clientX - canvasPositionAndSizeInWindow.left) / (canvasPositionAndSizeInWindow.width/c.width)))), (Math.floor(((event.clientY - canvasPositionAndSizeInWindow.top) / (canvasPositionAndSizeInWindow.height/c.height)))));
+
 }
 
-function getYFromEvent(event) {
-    yClicked = keepYWithinCanvas(Math.floor(((event.clientY - canvasPositionAndSizeInWindow.top) / (canvasPositionAndSizeInWindow.height/c.height))));
-    //console.log(yClicked);
-    return yClicked;
-}
-
-function getCoordsFromEvent(event) {
-    let elem = event.target.getBoundingClientRect();
-
+function updateGlobalCanvasPositionAndSizeCache() {
+    let elem = c.getBoundingClientRect();
+    canvasPositionAndSizeInWindow = { left: elem.left, top: elem.top, width: elem.width, height: elem.height };
 }
 
 //should this be in a class,? not just loose

@@ -5,7 +5,7 @@ ctx = c.getContext("2d");
 //Global variables describing window size, canvas size, and how the canvas is being drawn in CSS
 var canvasSize = {width: c.width, height: c.height};
 var windowSize = {height: window.innerHeight, width: window.innerWidth};
-var canvasPositionAndSizeInWindow; // Will contain left, top, width, height
+var canvasPositionAndSizeInWindow; // Will contain left, top, width, height. Gets Updated at start, when the window is resized, and to fix problems on mobile every Click
 
 
 var dvdWidth = 128;
@@ -61,6 +61,7 @@ gameState.addScene(bouncyScene);
 
 let gameRender = new TurquoiseRender(c, ctx);
 let gameInput = new TurquoiseInput(c, gameState);
+//gameInput.initialise();
 
 
 //console.log(gameState.getGobjects());
@@ -80,8 +81,5 @@ window.addEventListener("resize", function() {
 run();
 
 
-function updateGlobalCanvasPositionAndSizeCache() {
-    let elem = c.getBoundingClientRect();
-    canvasPositionAndSizeInWindow = { left: elem.left, top: elem.top, width: elem.width, height: elem.height };
-}
+
 
