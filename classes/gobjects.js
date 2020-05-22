@@ -27,6 +27,7 @@ class SpriteObject {
         //this.usePolyForHitDetection = false;
         this.clickShapePoints = [];
         this.relativeClickshape;
+        //this.alreadyDevClicked = false;
         //this.clickShapeNums = clickShapeNums;
         //console.log(clickShapeNums).length;
         if (clickShapeNums) {
@@ -49,7 +50,7 @@ class SpriteObject {
         this.updatePosition();
         this.updateFadeout();
         
-        gameState.getGobjects
+        //gameState.getGobjects
     }
     updatePosition() {
         this.position.add(this.velocity);
@@ -72,17 +73,13 @@ class SpriteObject {
     }
 
     doCoordsCollideWithThis(givenPosition) {
+        //this.relativeClickshape = null;
+        //console.log(this.relativeClickshape);
         if (isPositionWithinRectangle(givenPosition, this.position.x, (this.position.x + (this.width)), this.position.y, (this.position.y + (this.height)))) {
-            if (this.clickShapePoints.length > 0) {//Only uses 
-                let tempPoints = [];
-                let px;
-                let py;
-                for (let i = 0; i < this.clickShapePoints.length; i++) {
-                    px = (this.clickShapePoints[i].x + this.position.x);
-                    py = (this.clickShapePoints[i].y + this.position.y);
-                    tempPoints.push(new Point(px, py));
-                }
-                this.relativeClickshape = new Shape(tempPoints);
+            if (this.clickShapePoints.length > 0) {//Only uses if Object has clickbox
+                
+
+                this.relativeClickshape = this.getRelativeClickShapeFromPoints(this.clickShapePoints);
                 return this.relativeClickshape.areCoordsWithin(givenPosition);
             } else return true;
         }
@@ -92,6 +89,18 @@ class SpriteObject {
         
         
     }
+    getRelativeClickShapeFromPoints(arrayOfPoints) {
+        let tempPoints = [];
+        let px;
+        let py;
+        for (let i = 0; i < arrayOfPoints.length; i++) {
+            px = (arrayOfPoints[i].x + this.position.x);
+            py = (arrayOfPoints[i].y + this.position.y);
+            tempPoints.push(new Point(px, py));
+        }
+        return new Shape(tempPoints);
+    }
+
     //Speed means how fast to fade, thenDestory means whether the object is destroyed after fadeout
     startFadeout(speed = 0.05, willDestroyWhenInvisible = true, interactable = false) {
         this.fadeOut = true;
@@ -118,16 +127,33 @@ class SpriteObject {
     }
     onClickOrTap() {
         if(developerModes.makeClickShape) {
-            ctx.clearRect(0, 0, c.width, c.height);
-            ctx.drawImage(this.img, Math.round(this.position.x), Math.round(this.position.y), this.width, this.height);
-            developerModeVariables.relativeX = Math.round(this.position.x);
-            developerModeVariables.relativeY = Math.round(this.position.y);
-            //console.log(developerVariables.relativeX);
-            developerModeVariables.generateClickShapePoints = true;
-            developerModeVariables.freeze = true;
-            developerModeVariables.objectBeingSelected = this;
-            developerModeVariables.generatedPoints = "[";
+            console.log("devclick");
+            if (developerModeVariables.objectBeingSelected == null) {
+                //console.log("knew it was null");
+                if (this.clickShapePoints.length > 0) {
+                    //let displayClickbox = this.getRelativeClickShapeFromPoints(this.clickShapePoints);
+                    this.relativeClickshape.draw();
+                    console.log("Current Clickbox has " + this.clickShapePoints.length + " points.");
+                } else {
+                    console.log("This SpriteObject has no Clickbox yet.");
+                }
+                developerModeVariables.freeze = true;
+                developerModeVariables.objectBeingSelected = this;
+                //console.lo
+            } else if (developerModeVariables.objectBeingSelected = this) {
+                ctx.clearRect(0, 0, c.width, c.height);
+                ctx.drawImage(this.img, Math.round(this.position.x), Math.round(this.position.y), this.width, this.height);
+                developerModeVariables.relativeX = Math.round(this.position.x);
+                developerModeVariables.relativeY = Math.round(this.position.y);
+                //console.log(developerVariables.relativeX);
+                developerModeVariables.generateClickShapePoints = true;
+                developerModeVariables.generatedPoints = "[";
+            }
+
         }
+    }
+    onDevRightClick() {
+
     }
     isRequestingHoverhand() {
         return (this.hoverhand && this.interactable);

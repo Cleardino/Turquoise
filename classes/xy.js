@@ -67,7 +67,8 @@ class Line {
 
     draw() {
         //ctx.filter = 'url(#remove-alpha)';
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#FF0000";
         ctx.beginPath();
         ctx.moveTo(this.p1.x, this.p1.y);
         ctx.lineTo(this.p2.x, this.p2.y);

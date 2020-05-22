@@ -11,7 +11,10 @@ class TurquoiseInput {
             //Eventually skip reading clicks if hover is -1 -1, and set hover to -1 -1 every touchevent
             let clicked = getPositionFromEvent(event);
             //console.log(clicked);
+
+            console.log(developerModeVariables.generateClickShapePoints);
             if (developerModeVariables.generateClickShapePoints) {
+                developerModeVariables.objectBeingSelected.onClickOrTap();
                 let newpx = (clicked.x - developerModeVariables.relativeX)
                 let newpy =  (clicked.y - developerModeVariables.relativeY)
                 if (newpx < 0) {
@@ -68,12 +71,17 @@ class TurquoiseInput {
     forTopObjectAtPositionCallOnClick(clicked) {
         let clickActioned = false;
         //console.log(gameState.getGobjects());
-        for (var i = (self.gameState.getGobjects().length - 1); (i > -1) && (!clickActioned); i--) {
+        console.log(clicked);
+        console.log(self.gameState);
+        console.log(gameState);
+        for (let i = (self.gameState.getGobjects().length - 1); (i > -1) && (!clickActioned); i--) {
+            console.log("checked1");
             if (gameState.getGobjects()[i].doCoordsCollideWithThis(clicked) && gameState.getGobjects()[i].interactable) {
                 gameState.getGobjects()[i].onClickOrTap();
                 clickActioned = true;
             }
         }
+        console.log("clickactioned" + clickActioned);
     }
 
     updateCursorHover() {
