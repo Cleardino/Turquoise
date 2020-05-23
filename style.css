@@ -2,7 +2,7 @@ html, body {
     margin: 0;
     padding: 0;
     background-color: black;
-    overflow: hidden /*Disable scrolling*/
+    overflow: hidden /*Disable scrolling*/    
 }
 
 
@@ -23,12 +23,17 @@ canvas {
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
 
-
+    user-select: false;
+    -webkit-touch-callout: none;
     
 
     background-color: white;
     padding: 0;
     display: block;
-    margin: 0 auto;
+    margin: auto; /*this used to be 0 auto*/
 
 }
+
+/*.holder {
+    margin-top: 100;
+}*/

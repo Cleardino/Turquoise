@@ -7,6 +7,7 @@ class TurquoiseInput {
         var self = this;
 
         c.addEventListener('click', function(event) {
+            event.preventDefault();
             updateGlobalCanvasPositionAndSizeCache();
             //Eventually skip reading clicks if hover is -1 -1, and set hover to -1 -1 every touchevent
             let clicked = getPositionFromEvent(event);
@@ -14,7 +15,8 @@ class TurquoiseInput {
                 giveDevToolsClickEvent(clicked);
             }
             
-            console.log("clicked");
+            //console.log(clicked);
+            
             self.forTopObjectAtPositionCallOnClick(clicked);
             
             
@@ -27,6 +29,7 @@ class TurquoiseInput {
         }, false);
 
         c.addEventListener('mousemove', function(event) {
+            event.preventDefault();
             self.hover = getPositionFromEvent(event);
             //console.log(self.hover);
             //examplePoint.x = self.hover.x;
@@ -42,22 +45,35 @@ class TurquoiseInput {
 
         c.addEventListener('touchstart', e => {
             e.preventDefault();
-            console.log("touched");
-            console.log(e.cancelable);
+            updateGlobalCanvasPositionAndSizeCache();
+            let touchStarts = e.changedTouches;
+            //console.log(touchStarts);
+            //console.log("touched");
             self.hover.set(-1, -1); // in future hide custom cursor
+
+            for(let i = 0; i < touchStarts.length; i++) {
+                console.log(getPositionFromEvent(touchStarts[i]));
+                self.forTopObjectAtPositionCallOnClick(getPositionFromEvent(touchStarts[i]));
+            }
             
-            console.log(event);
-        }/*, {passive:false}*/);
+            
+            
+        });
+
+        /*document.addEventListener('touchmove', e=> {
+            e.preventDefault();
+        });*/
 
         c.addEventListener('contextmenu', e => {
             e.preventDefault();
           });
 
         document.addEventListener("keydown", function(event) {
+            event.preventDefault();
             if(runSettings.developerMode) {
                 giveDevtoolsKeyEvent(event);
             }
-        })
+        });
     }
     
     

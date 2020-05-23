@@ -25,7 +25,7 @@ function giveDevToolsObjectClicked(objClicked) {
         else if (developerModeVariables.objectBeingSelected = objClicked && (!developerModeVariables.generateClickShapePoints)) {
             ctx.clearRect(0, 0, c.width, c.height);
             console.log("Making new Clickbox... \nNote: The more points a Clickbox has, the more taxing it will be on performance.");
-            ctx.drawImage(objClicked.img, Math.round(objClicked.position.x), Math.round(objClicked.position.y), objClicked.width, objClicked.height);
+            ctx.drawImage(objClicked.getImage(), Math.round(objClicked.position.x), Math.round(objClicked.position.y), objClicked.width, objClicked.height);
             ctx.fillText("Developer Mode: Make Clickbox", 10, 10);
             ctx.fillText("Open the web console.", 10, 20);
             //ctx.beginPath();

@@ -192,7 +192,7 @@ class Shape {
     }
 
     areCoordsWithin(position) {
-        let ray = new Line(new Point(0,0), position);
+        let ray = new Line(new Position(0,0), position);
         let numberOfLinesIntersected = 0;
         //ray.draw();
         for(let i = 0; i < this.lineArray.length; i++) {
