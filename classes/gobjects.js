@@ -3,8 +3,9 @@ class SpriteObject {
         this.updateEveryFrame = true;
         this.name = name;
         this.position = position;
-        this.img = new Image();
-        this.img.src = imgURL;
+        this.img = [new Image()];
+        this.frameIndex = 0;
+        this.img[0].src = imgURL;
         this.width = width;
         this.height = height;
         this.velocity = new Velocity(0,0);
@@ -22,7 +23,8 @@ class SpriteObject {
         this.interactable = true;
         this.fadeSpeed;
         this.hoverhand;
-        this.hoverhand = true;
+        this.hoverhand = false;
+        this.oneClickbox = false;
         //this.usePolyForHitDetection;
         //this.usePolyForHitDetection = false;
         this.clickShapePoints = [];
@@ -30,12 +32,30 @@ class SpriteObject {
         //this.alreadyDevClicked = false;
         //this.clickShapeNums = clickShapeNums;
         //console.log(clickShapeNums).length;
+        
         if (clickShapeNums) {
-            //console.log("it's happening");
-            for(let i = 0; i < clickShapeNums.length; i++) {
-                this.clickShapePoints.push(new Point(clickShapeNums[i][0], clickShapeNums[i][1]))
-                //console.log("hi");
+            if (!(Array.isArray(clickShapeNums[0][0]))) {
+                clickShapeNums = [clickShapeNums];
+                if (clickShapeNums.length < this.img.length) {
+                    this.oneClickbox = true;
+                }
+                //console.log(this.name);
+                //console.log(clickShapeNums)
+            } else {
+                //console.log("got a superrayyyy");
+                //console.log(clickShapeNums.length);
             }
+            for(let o = 0; o < clickShapeNums.length; o++) {
+                this.clickShapePoints.push([]);
+                for(let i = 0; i < clickShapeNums[o].length; i++) {
+                    this.clickShapePoints[o].push(new Point(clickShapeNums[o][i][0], clickShapeNums[o][i][1]))
+                    //console.log(this.name);
+                    //console.log(this.clickShapePoints);
+                    //console.log("hi");
+                }
+            }
+            //console.log("it's happening");
+
         }
         //console.log(this.clickShapePoints);
         //console.log(this.fadeOut);
@@ -51,6 +71,9 @@ class SpriteObject {
         this.updateFadeout();
         
         //gameState.getGobjects
+    }
+    getImage() {
+        return this.img[this.frameIndex];
     }
     updatePosition() {
         this.position.add(this.velocity);
@@ -73,15 +96,36 @@ class SpriteObject {
     }
 
     doCoordsCollideWithThis(givenPosition) {
+
         //this.relativeClickshape = null;
         //console.log(this.relativeClickshape);
-        if (isPositionWithinRectangle(givenPosition, this.position.x, (this.position.x + (this.width)), this.position.y, (this.position.y + (this.height)))) {
-            if (this.clickShapePoints.length > 0) {//Only uses if Object has clickbox
-                
 
-                this.relativeClickshape = this.getRelativeClickShapeFromPoints(this.clickShapePoints);
+        /* if (this.clickShapePoints[this.frameIndex].length < 3) {
+            //TODO THERE IS A BETTER FIX TO ALL THIS
+            //console.log('Trying to detect collision with Clickbox with fewer than 3 points');
+            return false;
+        } */
+
+        if (isPositionWithinRectangle(givenPosition, this.position.x, (this.position.x + (this.width)), this.position.y, (this.position.y + (this.height)))) {
+            if (!this.clickShapePoints[0]) { //IF NO CLICKBOX
+                return true;
+            }
+            if (this.clickShapePoints == []){
+                //console.log("hiii");
+                return true;
+            }
+            if (this.clickShapePoints[this.frameIndex].length < 1) {
+                return true;
+            }
+                
+                if(this.oneClickbox) {
+                    this.relativeClickshape = this.getRelativeClickShapeFromPoints(this.clickShapePoints[0]);
+                } else {
+                    this.relativeClickshape = this.getRelativeClickShapeFromPoints(this.clickShapePoints[this.frameIndex]);
+                }
+                
                 return this.relativeClickshape.areCoordsWithin(givenPosition);
-            } else return true;
+            
         }
         else {
             return false;
@@ -126,6 +170,7 @@ class SpriteObject {
         return this.requestsDestroy;
     }
     onClickOrTap() {
+        
         if(runSettings.developerMode) {
             giveDevToolsObjectClicked(this);
         }
@@ -140,7 +185,58 @@ class SpriteObject {
 }
 
 
+class TestSwitch extends SpriteObject {
+    constructor(name, position) {
+        super(name, position, 150, 150, "images/switch/switch1.png",[[[14, 91], [27, 78], [18, 24], [31, 23], [44, 80], [109, 113], [110, 127], [93, 146], [13, 107]],[[14, 105], [15, 92], [31, 74], [88, 101], [120, 59], [124, 58], [130, 66], [101, 110], [108, 113], [110, 128], [92, 145]]]);
+        this.img = [new Image(), new Image()];
+        this.img[0].src = "images/switch/switch1.png";
+        this.img[1].src = "images/switch/switch5.png";
+        this.hoverhand = true;
+    }
+    onClickOrTap() {
+        super.onClickOrTap();
+        if (this.frameIndex < 1) {
+            this.frameIndex = 1;
+        } else {
+            this.frameIndex = 0;
+        }
+    }
 
+
+}
+
+class BetterTestSwitch extends SpriteObject {
+    constructor(name, position) {
+        super(name, position, 150, 150, "images/switch/switch1.png",[[[54, 61], [124, 91], [111, 146], [75, 150], [4, 115], [2, 82], [9, 15], [35, 13]],[],[],[],[[6, 104], [6, 82], [29, 63], [81, 85], [119, 49], [136, 59], [133, 81], [112, 136], [102, 150], [91, 150]]]);
+        this.img = [new Image(), new Image(), new Image(), new Image(), new Image()]
+        this.img[0].src = "images/switch/switch1.png";
+        this.img[1].src = "images/switch/switch2.png";
+        this.img[2].src = "images/switch/switch3.png";
+        this.img[3].src = "images/switch/switch4.png";
+        this.img[4].src = "images/switch/switch5.png";
+        this.hoverhand = true;
+        this.switchOn = false;
+    }
+    onClickOrTap() {
+        super.onClickOrTap();
+        if (this.switchOn) {
+            this.switchOn = false;
+        } else {
+            this.switchOn = true;
+        }
+    }
+
+    update() {
+        super.update();
+        if(this.switchOn && (this.frameIndex < 4)) {
+            this.frameIndex++;
+        }
+        if(((!this.switchOn)) && (this.frameIndex > 0)) {
+            this.frameIndex--;
+        }
+
+    }
+}
 
 
 class BouncyImage extends SpriteObject {

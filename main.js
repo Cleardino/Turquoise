@@ -1,8 +1,9 @@
 var c = document.getElementById("TurquoiseCanvas");
 var ctx = c.getContext("2d"); //removing var shouldn't break it
 //var trueSize = true;
-
-var runSettings = {developerMode: true, trueSize: true};
+var userIsUsingiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; //this code detecting if user is on iOS is from Stack Exchange, but I think it's ok since its basically one line
+//console.log(iOS);
+var runSettings = {developerMode: true, trueSize: false};
 
 //Global variables describing window size, canvas size, and how the canvas is being drawn in CSS
 var canvasSize = {width: c.width, height: c.height};
@@ -41,7 +42,14 @@ function run() {
 }
 
 
+//stackoverflow lock scroll code. Fixes bug if user adds to home screen on iOS. Actually I think this always happens?
+/*if (userIsUsingiOS && window.navigator.standalone) {
+  //console.log("standalone");
+  //c.style.position = auto;
+  document.body.style.position = 'fixed';//fixed
+  document.body.style.top = `-${window.scrollY}px`; 
 
+}*/
 
 
 //Initialise
@@ -55,16 +63,18 @@ let texBox = [[55, 1], [101,1], [101,36], [191, 54], [192, 83], [199, 100], [193
 
 //console.log(texBox.length);
 
-let texas = new BouncyImageSpawner(200, 195, "images/texas.png", 1, "texas", 8, texBox);
+let texas = new BouncyImageSpawner(200, 195, "images/texas.png", 3, "texas", 8, texBox);
 
 //texas.clickShapeNums = texBox;
 //console.log(texas.clickShapeM);
 
 let examplePoint = new Point(10,10);
-let line1 = new Line(new Position(10,10), new Position(20, 200));
-let line2 = new Line(new Position(150,150), new Position(5, 20));
-let line3 = new Line(new Position(80,70), new Position(100,50));
-
+//let line1 = new Line(new Position(10,10), new Position(20, 200));
+//let line2 = new Line(new Position(150,150), new Position(5, 20));
+//let line3 = new Line(new Position(80,70), new Position(100,50));
+let testswitch = new BetterTestSwitch("switch1", new Position(500,0));
+let testswitch2 = new BetterTestSwitch("switch2", new Position(500,200));
+let mouse = new SpriteObject("mouse", new Position(0,90), 385, 270, "images/mouse.png");
 let triangle = new Shape([new Point(517, 124), new Point(512, 180), new Point(416, 156)]);
 
 //texasShape = new Shape([new Point(171,108), new Point(212,110), new Point(216,138), new Point(315,159),  new Point(324,221), new Point(268,255), new Point(267,293), new Point(236,287), new Point(196,225),new Point(170,225),new Point(160,235),new Point(107,188),new Point(171,188)]);
@@ -73,7 +83,7 @@ let triangle = new Shape([new Point(517, 124), new Point(512, 180), new Point(41
 
 //console.log(line1.isIntersecting(line2));
 
-let bouncyScene = new Scene("BouncyScene", [/*texas*/], [/*dvdSpawner, bdSpawner, */marioSpawner, texas]);
+let bouncyScene = new Scene("BouncyScene", [testswitch,testswitch2,mouse], [/*dvdSpawner, bdSpawner, marioSpawner, */texas]);
 bouncyScene.spawn();
 gameState.addScene(bouncyScene);
 

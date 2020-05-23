@@ -15,9 +15,9 @@ class TurquoiseRender {
             if (o.visibile) {
                 this.ctx.globalAlpha = o.opacity;
                 if (this.snapObjectsToPixel) {
-                    this.ctx.drawImage(o.img, Math.round(o.position.x), Math.round(o.position.y), o.width, o.height);
+                    this.ctx.drawImage(o.getImage(), Math.round(o.position.x), Math.round(o.position.y), o.width, o.height);
                 } else {
-                    this.ctx.drawImage(o.img, o.position.x, o.position.y, o.width, o.height);
+                    this.ctx.drawImage(o.getImage(), o.position.x, o.position.y, o.width, o.height);
                  }
                 this.ctx.globalAlpha = 1;
                 //ctx.globalCompositionOperation = "source-over";

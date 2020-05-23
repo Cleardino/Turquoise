@@ -25,6 +25,7 @@ window.addEventListener("orientationchange", function() {
         scaleToWindow();
     }
     updateGlobalCanvasPositionAndSizeCache();
+
   });
 
 window.addEventListener("resize", function() {
