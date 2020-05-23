@@ -126,35 +126,11 @@ class SpriteObject {
         return this.requestsDestroy;
     }
     onClickOrTap() {
-        if(developerModes.makeClickShape) {
-            console.log("devclick");
-            if (developerModeVariables.objectBeingSelected == null) {
-                //console.log("knew it was null");
-                if (this.clickShapePoints.length > 0) {
-                    //let displayClickbox = this.getRelativeClickShapeFromPoints(this.clickShapePoints);
-                    this.relativeClickshape.draw();
-                    console.log("Current Clickbox has " + this.clickShapePoints.length + " points.");
-                } else {
-                    console.log("This SpriteObject has no Clickbox yet.");
-                }
-                developerModeVariables.freeze = true;
-                developerModeVariables.objectBeingSelected = this;
-                //console.lo
-            } else if (developerModeVariables.objectBeingSelected = this) {
-                ctx.clearRect(0, 0, c.width, c.height);
-                ctx.drawImage(this.img, Math.round(this.position.x), Math.round(this.position.y), this.width, this.height);
-                developerModeVariables.relativeX = Math.round(this.position.x);
-                developerModeVariables.relativeY = Math.round(this.position.y);
-                //console.log(developerVariables.relativeX);
-                developerModeVariables.generateClickShapePoints = true;
-                developerModeVariables.generatedPoints = "[";
-            }
-
+        if(runSettings.developerMode) {
+            giveDevToolsObjectClicked(this);
         }
     }
-    onDevRightClick() {
 
-    }
     isRequestingHoverhand() {
         return (this.hoverhand && this.interactable);
     }
@@ -163,14 +139,9 @@ class SpriteObject {
     }
 }
 
-/* class TexanImage extends SpriteObject {
-    constructor(name, position, width, height, imgURL) {
-        super(name, position, width, height, imgURL);
-        this.hoverhand = false;
-        this.usePolyForHitDetection = true;
-        this.hitDetectionPoly = []; //something
-    }
-} */
+
+
+
 
 class BouncyImage extends SpriteObject {
     constructor(name, coords, width, height, imgURL, speed = 8, clickShapeNums) {
@@ -196,8 +167,11 @@ class BouncyImage extends SpriteObject {
 
     onClickOrTap() {
         super.onClickOrTap();
-        this.startFadeout();
-        this.velocity.set(0,0);
+        if(!developerModes.makeClickShape) {
+            this.startFadeout();
+            this.velocity.set(0,0);
+        }
+        
     }
 
 

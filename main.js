@@ -1,8 +1,8 @@
 var c = document.getElementById("TurquoiseCanvas");
 var ctx = c.getContext("2d"); //removing var shouldn't break it
 //var trueSize = true;
-var developerModes = {trueSize: true, makeClickShape: true};
-var developerModeVariables = {freeze: false, relativeX: null, relativeY: null, generateClickShapePoints: false, generatedPoints: "", objectBeingSelected: null};
+
+var runSettings = {developerMode: true, trueSize: true};
 
 //Global variables describing window size, canvas size, and how the canvas is being drawn in CSS
 var canvasSize = {width: c.width, height: c.height};
@@ -24,6 +24,7 @@ function run() {
     if (!developerModeVariables.freeze) {
       gameState.update();
       gameRender.draw(gameState);
+      gameInput.updateCursorHover();
     }
     
     //examplePoint.draw();
@@ -32,7 +33,7 @@ function run() {
     //triangle.draw();
     //texasShape.draw();
     //line3.draw();
-    gameInput.updateCursorHover();
+    
     framesDrawn++;
     //time = time - new Date();
     //console.log(framesDrawn/60);
@@ -83,7 +84,7 @@ let gameInput = new TurquoiseInput(c, gameState);
 
 
 //console.log(gameState.getGobjects());
-if (!developerModes.trueSize) {
+if (!runSettings.trueSize) {
     scaleToWindow();
 }
 updateGlobalCanvasPositionAndSizeCache();
@@ -91,11 +92,9 @@ updateGlobalCanvasPositionAndSizeCache();
 
 //disable right click
 
-noContext = document.getElementById('noContextMenu');
+//noContext = document.getElementById('noContextMenu');
 
-noContext.addEventListener('contextmenu', e => {
-  e.preventDefault();
-});
+
 
 
 run();

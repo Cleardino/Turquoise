@@ -10,30 +10,18 @@ class TurquoiseInput {
             updateGlobalCanvasPositionAndSizeCache();
             //Eventually skip reading clicks if hover is -1 -1, and set hover to -1 -1 every touchevent
             let clicked = getPositionFromEvent(event);
-            //console.log(clicked);
-
-            console.log(developerModeVariables.generateClickShapePoints);
-            if (developerModeVariables.generateClickShapePoints) {
-                developerModeVariables.objectBeingSelected.onClickOrTap();
-                let newpx = (clicked.x - developerModeVariables.relativeX)
-                let newpy =  (clicked.y - developerModeVariables.relativeY)
-                if (newpx < 0) {
-                    newpx = 0;
-                }
-                if (newpy < 0) {
-                    newpy = 0;
-                }
-                if (newpy > developerModeVariables.objectBeingSelected.height) {
-                    newpy = developerModeVariables.objectBeingSelected.height;
-                }
-                if (newpx > developerModeVariables.objectBeingSelected.width) {
-                    newpx = developerModeVariables.objectBeingSelected.height;
-                }
-                developerModeVariables.generatedPoints = developerModeVariables.generatedPoints.concat("[" + newpx + ", " + newpy + "], ");
-                console.log(developerModeVariables.generatedPoints);
+            if(runSettings.developerMode) {
+                giveDevToolsClickEvent(clicked);
             }
-
+            
+            console.log("clicked");
             self.forTopObjectAtPositionCallOnClick(clicked);
+            
+            
+            
+            
+            
+            
             // Idea for alternate place to do this logic?: self.gameState.getTopObjectAtPosition().onClickOrTap();
             
         }, false);
@@ -52,36 +40,40 @@ class TurquoiseInput {
             //console.log(this.hoverX+", "+this.hoverY);
         }, false);
 
-        //Below event for testing only
-        /*document.addEventListener("keydown", function(event) {
-            //console.log("ooh");
-            if (event.key == "ArrowUp") {
-                line1.p2 = self.hover;
-            }
-            if (event.key == "ArrowDown") {
-                examplePoint.x = self.hover.x;
-                examplePoint.y = self.hover.y;
-            }
+        c.addEventListener('touchstart', e => {
+            e.preventDefault();
+            console.log("touched");
+            console.log(e.cancelable);
+            self.hover.set(-1, -1); // in future hide custom cursor
             
-        })*/
+            console.log(event);
+        }/*, {passive:false}*/);
+
+        c.addEventListener('contextmenu', e => {
+            e.preventDefault();
+          });
+
+        document.addEventListener("keydown", function(event) {
+            if(runSettings.developerMode) {
+                giveDevtoolsKeyEvent(event);
+            }
+        })
     }
     
     
 
+   
+
     forTopObjectAtPositionCallOnClick(clicked) {
         let clickActioned = false;
-        //console.log(gameState.getGobjects());
-        console.log(clicked);
-        console.log(self.gameState);
-        console.log(gameState);
-        for (let i = (self.gameState.getGobjects().length - 1); (i > -1) && (!clickActioned); i--) {
-            console.log("checked1");
-            if (gameState.getGobjects()[i].doCoordsCollideWithThis(clicked) && gameState.getGobjects()[i].interactable) {
-                gameState.getGobjects()[i].onClickOrTap();
-                clickActioned = true;
+        if (gameState.interactable) {
+            for (let i = (self.gameState.getGobjects().length - 1); (i > -1) && (!clickActioned); i--) {
+                if (gameState.getGobjects()[i].doCoordsCollideWithThis(clicked) && gameState.getGobjects()[i].interactable) {
+                    gameState.getGobjects()[i].onClickOrTap();
+                    clickActioned = true;
+                }
             }
         }
-        console.log("clickactioned" + clickActioned);
     }
 
     updateCursorHover() {
@@ -119,3 +111,4 @@ class TurquoiseInput {
     }
 
 }
+

@@ -21,14 +21,14 @@ function scaleToWindow() {
 }
 
 window.addEventListener("orientationchange", function() {
-    if (!developerModes.trueSize) {
+    if (!runSettings.trueSize) {
         scaleToWindow();
     }
     updateGlobalCanvasPositionAndSizeCache();
   });
 
 window.addEventListener("resize", function() {
-    if (!developerModes.trueSize) {
+    if (!runSettings.trueSize) {
         scaleToWindow();
     }
     updateGlobalCanvasPositionAndSizeCache();
