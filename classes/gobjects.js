@@ -1,5 +1,6 @@
 class SpriteObject {
-    constructor(name, position, width, height, imgURL) {
+    constructor(name, position, width, height, imgURL, clickShapeNums) {
+        this.updateEveryFrame = true;
         this.name = name;
         this.position = position;
         this.img = new Image();
@@ -20,7 +21,23 @@ class SpriteObject {
         this.interactable;
         this.interactable = true;
         this.fadeSpeed;
-        this.hoverhand = false;
+        this.hoverhand;
+        this.hoverhand = true;
+        //this.usePolyForHitDetection;
+        //this.usePolyForHitDetection = false;
+        this.clickShapePoints = [];
+        this.relativeClickshape;
+        //this.alreadyDevClicked = false;
+        //this.clickShapeNums = clickShapeNums;
+        //console.log(clickShapeNums).length;
+        if (clickShapeNums) {
+            //console.log("it's happening");
+            for(let i = 0; i < clickShapeNums.length; i++) {
+                this.clickShapePoints.push(new Point(clickShapeNums[i][0], clickShapeNums[i][1]))
+                //console.log("hi");
+            }
+        }
+        //console.log(this.clickShapePoints);
         //console.log(this.fadeOut);
         //console.log(this.visibile);
     }
@@ -33,7 +50,7 @@ class SpriteObject {
         this.updatePosition();
         this.updateFadeout();
         
-        gameState.getGobjects
+        //gameState.getGobjects
     }
     updatePosition() {
         this.position.add(this.velocity);
@@ -45,7 +62,7 @@ class SpriteObject {
                 this.opacity = 0;
                 this.visibile = false;
                 if (this.willDestroy){
-                    //TODO destroy from array
+                    //TODO destroy from array. // Wait I think this is done by Gamestate atm
                 }
                 //console.log(this.isVisible());
             }
@@ -56,13 +73,34 @@ class SpriteObject {
     }
 
     doCoordsCollideWithThis(givenPosition) {
+        //this.relativeClickshape = null;
+        //console.log(this.relativeClickshape);
         if (isPositionWithinRectangle(givenPosition, this.position.x, (this.position.x + (this.width)), this.position.y, (this.position.y + (this.height)))) {
-            return true;
+            if (this.clickShapePoints.length > 0) {//Only uses if Object has clickbox
+                
+
+                this.relativeClickshape = this.getRelativeClickShapeFromPoints(this.clickShapePoints);
+                return this.relativeClickshape.areCoordsWithin(givenPosition);
+            } else return true;
         }
         else {
             return false;
         }
+        
+        
     }
+    getRelativeClickShapeFromPoints(arrayOfPoints) {
+        let tempPoints = [];
+        let px;
+        let py;
+        for (let i = 0; i < arrayOfPoints.length; i++) {
+            px = (arrayOfPoints[i].x + this.position.x);
+            py = (arrayOfPoints[i].y + this.position.y);
+            tempPoints.push(new Point(px, py));
+        }
+        return new Shape(tempPoints);
+    }
+
     //Speed means how fast to fade, thenDestory means whether the object is destroyed after fadeout
     startFadeout(speed = 0.05, willDestroyWhenInvisible = true, interactable = false) {
         this.fadeOut = true;
@@ -88,9 +126,11 @@ class SpriteObject {
         return this.requestsDestroy;
     }
     onClickOrTap() {
-        this.startFadeout();
-        this.velocity.set(0,0);
+        if(runSettings.developerMode) {
+            giveDevToolsObjectClicked(this);
+        }
     }
+
     isRequestingHoverhand() {
         return (this.hoverhand && this.interactable);
     }
@@ -99,9 +139,13 @@ class SpriteObject {
     }
 }
 
+
+
+
+
 class BouncyImage extends SpriteObject {
-    constructor(name, coords, width, height, imgURL, speed = 8) {
-        super(name, coords, width, height, imgURL);
+    constructor(name, coords, width, height, imgURL, speed = 8, clickShapeNums) {
+        super(name, coords, width, height, imgURL, clickShapeNums);
         this.velocity.x = (Math.random() - 0.5) * speed;
         this.velocity.y = (Math.random() - 0.5) * speed;
         this.hoverhand = true;
@@ -121,11 +165,20 @@ class BouncyImage extends SpriteObject {
         super.updatePosition();
     }
 
+    onClickOrTap() {
+        super.onClickOrTap();
+        if(!developerModes.makeClickShape) {
+            this.startFadeout();
+            this.velocity.set(0,0);
+        }
+        
+    }
+
 
 }
 
 class BouncyImageSpawner {
-    constructor(width, height, imgURL, quantity = 10, name = "BouncyImage", speed = 2) {
+    constructor(width, height, imgURL, quantity = 10, name = "BouncyImage", speed = 2, clickShapeNums) {
         this.width = width;
         this.height = height;
         this.imgURL = imgURL;
@@ -137,9 +190,10 @@ class BouncyImageSpawner {
         this.speed = speed;
         for (let i = 0; i < this.quantity; i++) {
             let x = Math.random() * (canvasSize.width - this.width);
-            let y = Math.random() * (canvasSize.height - this.height) ;
+            let y = Math.random() * (canvasSize.height - this.height);
+            //console.log(x);
             //turquoiseState.getCurrentScene().addGobjcet()
-            this.spawned.push(new BouncyImage(this.name+ i.toString(), new Position(x,y), this.width, this.height, this.imgURL, this.speed));
+            this.spawned.push(new BouncyImage(this.name+ i.toString(), new Position(x,y), this.width, this.height, this.imgURL, this.speed, clickShapeNums));
             //imageArray.push(new BouncyImage("dvd"+ i.toString(),x, y, dvdWidth, dvdHeight, "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/DVD_logo.svg/320px-DVD_logo.svg.png"));
 
         }

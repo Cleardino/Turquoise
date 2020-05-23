@@ -18,9 +18,11 @@ class TurquoiseRender {
                     this.ctx.drawImage(o.img, Math.round(o.position.x), Math.round(o.position.y), o.width, o.height);
                 } else {
                     this.ctx.drawImage(o.img, o.position.x, o.position.y, o.width, o.height);
-                }
+                 }
                 this.ctx.globalAlpha = 1;
                 //ctx.globalCompositionOperation = "source-over";
+                
+                
             }
         
         //imageArray[i].update();

@@ -2,6 +2,7 @@ class TurquoiseState {
     constructor() {
         this.scenes = [];
         this.currentScene = 0;
+        this.interactable = true;
         //console.log(this.scenes);
     }
     

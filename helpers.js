@@ -22,7 +22,7 @@ function positionWithinCanvas(x, y) {
     if (y < 0) {
         y = 0;
     }
-    if (x > canvasSize.height) {
+    if (y > canvasSize.height) {
         y = canvasSize.height;
     }
     return new Position(x, y);
