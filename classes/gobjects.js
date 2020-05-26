@@ -3,13 +3,14 @@ class SpriteObject {
         this.updateEveryFrame = true;
         this.name = name;
         this.position = position;
-        this.img = [new Image()];
+        if(imgURL) {
+            this.img = [new Image()];
+            this.img[0].src = imgURL;
+        }
         this.frameIndex = 0;
-        this.img[0].src = imgURL;
         this.width = width;
         this.height = height;
         this.velocity = new Velocity(0,0);
-        this.colour = "Black";
         this.opacity = 1;
         this.visible;
         this.visibile = true;
@@ -24,7 +25,9 @@ class SpriteObject {
         this.fadeSpeed;
         this.hoverhand;
         this.hoverhand = false;
-        this.oneClickbox = false;
+        this.pointerhand;
+        this.pointerhand = false;
+        this.clickRectanglePadding = 0;
         //this.usePolyForHitDetection;
         //this.usePolyForHitDetection = false;
         this.clickShapePoints = [];
@@ -32,13 +35,10 @@ class SpriteObject {
         //this.alreadyDevClicked = false;
         //this.clickShapeNums = clickShapeNums;
         //console.log(clickShapeNums).length;
-        
+
         if (clickShapeNums) {
             if (!(Array.isArray(clickShapeNums[0][0]))) {
                 clickShapeNums = [clickShapeNums];
-                if (clickShapeNums.length < this.img.length) {
-                    this.oneClickbox = true;
-                }
                 //console.log(this.name);
                 //console.log(clickShapeNums)
             } else {
@@ -62,6 +62,12 @@ class SpriteObject {
         //console.log(this.visibile);
     }
     
+    draw(x = Math.round(this.position.x), y = Math.round(this.position.y)) {
+        ctx.globalAlpha = this.opacity;
+        ctx.drawImage(this.getImage(), x, y, this.width, this.height);
+        ctx.globalAlpha = 1;
+    }
+
     getName() {
         return this.name;
     }
@@ -106,25 +112,22 @@ class SpriteObject {
             return false;
         } */
 
-        if (isPositionWithinRectangle(givenPosition, this.position.x, (this.position.x + (this.width)), this.position.y, (this.position.y + (this.height)))) {
-            if (!this.clickShapePoints[0]) { //IF NO CLICKBOX
+        if (isPositionWithinRectangle(givenPosition, this.position.x-this.clickRectanglePadding, (this.position.x + (this.width) + this.clickRectanglePadding), this.position.y - this.clickRectanglePadding, (this.position.y + (this.height) + this.clickRectanglePadding))) {
+            if (this.clickShapePoints && (this.clickShapePoints.length == 1)) {
+                this.relativeClickshape = this.getRelativeClickShapeFromPoints(this.clickShapePoints[0]);
+                return this.relativeClickshape.areCoordsWithin(givenPosition);
+            }            
+            if (!this.clickShapePoints[this.frameIndex]) { //IF NO CLICKBOX (this used to be [0], but this makes more sense I think)
                 return true;
             }
             if (this.clickShapePoints == []){
-                //console.log("hiii");
                 return true;
             }
             if (this.clickShapePoints[this.frameIndex].length < 1) {
                 return true;
             }
-                
-                if(this.oneClickbox) {
-                    this.relativeClickshape = this.getRelativeClickShapeFromPoints(this.clickShapePoints[0]);
-                } else {
-                    this.relativeClickshape = this.getRelativeClickShapeFromPoints(this.clickShapePoints[this.frameIndex]);
-                }
-                
-                return this.relativeClickshape.areCoordsWithin(givenPosition);
+            this.relativeClickshape = this.getRelativeClickShapeFromPoints(this.clickShapePoints[this.frameIndex]);   
+            return this.relativeClickshape.areCoordsWithin(givenPosition);
             
         }
         else {
@@ -174,18 +177,70 @@ class SpriteObject {
         if(runSettings.developerMode) {
             giveDevToolsObjectClicked(this);
         }
+        console.log("onClickOrTap" + this.name);
+    }
+
+    onMouseOrTapDown() {
+        console.log("OnMouseOrTapDown" + this.name);
+    }
+
+    onClickOrTapExit(position = undefined) { //Called if actively held down cursor or actively held tap leaves the object
+        console.log("onClickOrTapExit" + this.name);
+    }
+
+    onMouseOrTapExit() { //Called if any cursor or actively held tap leaves the object
+        console.log("onMouseOrTapExit" + this.name);
     }
 
     isRequestingHoverhand() {
         return (this.hoverhand && this.interactable);
     }
-    onMouseHover() {
-        //console.log(this.name);
+
+    isRequestingPointerhand() {
+        return this.pointerhand;
+    }
+/*     onMouseHover() {
+        console.log("hovering");
+    } */
+    onMouseStartHover() {
+        console.log("onMouseStartHover"+this.name);
+    }
+    onMouseEndHover() { //Called if mouse hover ends, regardless of whether they were holding down mouse
+        console.log("onMouseEndHover"+this.name);
     }
 }
 
+class PlayButton extends SpriteObject { //Start by making a specific one, then make something generic. Imagine even if a class could accept button text
+    constructor(position) {
+        super("playButton", position, 72, 20, "images/Play.png");
+        this.clickRectanglePadding = 20;
+        this.pointerhand = true;
+        this.img.push(new Image());
+        this.img.push(new Image());
+        this.img[1].src = "images/Play-hover.png";
+        this.img[2].src = "images/Play-down.png";
+    }
+    onClickOrTap(){
+        super.onClickOrTap();
+        gameState.goToNextScene();
+        //this.frameIndex = 0;
+    }
+    onMouseOrTapDown(){
+        super.onMouseOrTapDown();
+        this.frameIndex = 2;
+    }
+    onMouseOrTapExit(){
+        super.onMouseOrTapExit();
+        this.frameIndex = 0;
+    }
+    onMouseStartHover() {
+        super.onMouseStartHover();
+        this.frameIndex = 1;
+    }
 
-class TestSwitch extends SpriteObject {
+}
+
+/* class TestSwitch extends SpriteObject {
     constructor(name, position) {
         super(name, position, 150, 150, "images/switch/switch1.png",[[[14, 91], [27, 78], [18, 24], [31, 23], [44, 80], [109, 113], [110, 127], [93, 146], [13, 107]],[[14, 105], [15, 92], [31, 74], [88, 101], [120, 59], [124, 58], [130, 66], [101, 110], [108, 113], [110, 128], [92, 145]]]);
         this.img = [new Image(), new Image()];
@@ -236,8 +291,120 @@ class BetterTestSwitch extends SpriteObject {
         }
 
     }
+} */
+
+
+/* This is to be used to make switches and anything else that alternates between a state A and state B on tap or click.
+All images provided should have the same width and height. If state B specifics aren't provided it will stick to default.
+Speed is how many repeat frames to insert between provided frames. 0 is fastest.*/
+class TwoStateSpriteObject extends SpriteObject {
+    constructor(name, position, width, height, defaultSpriteURL, stateBSpriteURL = null, transitionFramesURLs = null, transitionSpeed = 0, defaultClickShape = null, stateBClickShape = null) {
+        super(name, position, width, height, null, makeTSClickShapeArray(defaultClickShape, transitionFramesURLs, stateBClickShape));
+        this.arrayOfURLs = [defaultSpriteURL];
+        this.whenStartedToWait;
+        //this.arrayOfURLs = ["ha"];
+        //this.arrayOfURLs.push(defaultSpriteURL);
+        if(transitionFramesURLs != null) {
+            this.arrayOfURLs = this.arrayOfURLs.concat(transitionFramesURLs);
+        }
+        if(stateBSpriteURL != null) {
+            this.arrayOfURLs.push(stateBSpriteURL);
+        }
+
+        this.img = [];
+        this.stateBIndex = this.arrayOfURLs.length - 1;
+        this.inStateB = false;
+        this.hoverhand = true;
+        this.transitionSpeed = transitionSpeed;
+        for(let i = 0; i < this.arrayOfURLs.length; i++) {
+            this.img.push(new Image());
+            this.img[i].src = this.arrayOfURLs[i];
+        }
+        
+    }
+
+    onClickOrTap() {
+        super.onClickOrTap();
+        this.activate();
+    }
+
+    activate() {
+        if (this.inStateB) {
+            this.makeStateA();
+        }
+        else {
+            this.makeStateB();
+        }
+    }
+
+    makeStateA() {
+        if (this.inStateB) {
+            this.inStateB = false;
+            this.interactable = false;
+            this.whenStartedToWait = framesDrawn;
+        }
+    }
+
+    makeStateB() {
+        if (!this.inStateB) {
+            this.inStateB = true;
+            this.interactable = false;
+            this.whenStartedToWait = framesDrawn;
+        }
+    }
+
+    update() {
+        super.update();
+        if((this.inStateB && (this.frameIndex < this.stateBIndex)) && ((framesDrawn-this.whenStartedToWait) > this.transitionSpeed)) {
+            this.frameIndex++;
+            this.whenStartedToWait = framesDrawn;
+            if (this.frameIndex == this.stateBIndex) {
+                console.log("made interactable1");
+                this.interactable = true;
+            }
+        }
+        if((((!this.inStateB)) && (this.frameIndex > 0)) && ((framesDrawn-this.whenStartedToWait) > this.transitionSpeed)) {
+            this.frameIndex--;
+            this.whenStartedToWait = framesDrawn;
+            if (this.frameIndex == 0) {
+                console.log("made interactable2");
+                this.interactable = true;
+            }
+        }
+        /* if(((this.frameIndex == 0) || (this.frameIndex == this.stateBIndex)) && !this.interactable) {
+            console.log("made interactable3");
+            this.interactable = true;
+        } */
+    }
 }
 
+class DragSwitch extends TwoStateSpriteObject {
+    constructor(p1) {
+        super("switch1", p1, 150, 150, "images/switch/switch1.png", "images/switch/switch5.png", ["images/switch/switch2.png","images/switch/switch3.png","images/switch/switch4.png"], 10, [[54, 61], [124, 91], [111, 146], [75, 150], [4, 115], [2, 82], [9, 15], [35, 13]], [[6, 104], [6, 82], [29, 63], [81, 85], [119, 49], [136, 59], [133, 81], [112, 136], [102, 150], [91, 150]]);
+    }
+
+    onClickOrTap(){
+        //do nothing
+        console.log("clicked");
+        //super.onClickOrTap();
+    }
+    onClickOrTapExit(position = undefined) {
+        super.onClickOrTapExit(position);
+        if(position) {
+            console.log(position);
+            //console.log(this.position.x+(this.width/2) + 40);
+             if((position.x > this.position.x+(this.width/2)-40) && (!this.inStateB)){
+                console.log("make state b");
+                this.makeStateB();
+            } else if(position.x < (this.position.x+(this.width/2) + 40)) {
+                console.log("make state a");
+                this.makeStateA();
+            }
+            console.log(this.position.x+(this.width/2));
+        }
+        
+    } 
+}
 
 class BouncyImage extends SpriteObject {
     constructor(name, coords, width, height, imgURL, speed = 8, clickShapeNums) {
@@ -295,4 +462,26 @@ class BouncyImageSpawner {
         }
     }
 
+}
+
+/*This does something important that I'm not sure how to explain.... required for TwoStateSpriteObject*/
+function makeTSClickShapeArray(defaultClickShape, transitionFramesURLs, stateBClickShape) {
+    let tempClickShapeNums;
+    if (defaultClickShape != null) {
+        tempClickShapeNums = [defaultClickShape];
+    }
+    else {
+        tempClickShapeNums = false;
+    }
+    if (transitionFramesURLs != null) {
+        if (stateBClickShape != null) {
+            for (let w = 0; w < transitionFramesURLs.length; w++) {
+                tempClickShapeNums.push([]);
+            }
+        }
+    }
+    if (stateBClickShape != null) {
+        tempClickShapeNums.push(stateBClickShape);
+    }
+    return tempClickShapeNums;
 }

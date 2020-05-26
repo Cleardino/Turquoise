@@ -31,6 +31,9 @@ window.addEventListener("orientationchange", function() {
 window.addEventListener("resize", function() {
     if (!runSettings.trueSize) {
         scaleToWindow();
+        if(runSettings.customCursors) {
+            c.style.cursor = 'none';
+          }
     }
     updateGlobalCanvasPositionAndSizeCache();
   });

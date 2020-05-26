@@ -1,7 +1,7 @@
 class TurquoiseState {
     constructor() {
         this.scenes = [];
-        this.currentScene = 0;
+        this.currentSceneIndex = 0;
         this.interactable = true;
         //console.log(this.scenes);
     }
@@ -32,27 +32,27 @@ class TurquoiseState {
     }
 
     getArrayPosOfCurrentScene() {
-        return this.currentScene;
+        return this.currentSceneIndex;
     }
     
     getNameOfCurrentScene(){
-        return this.currentScene.getName();
+        return this.currentSceneIndex.getName();
     }
     getCurrentScene(){
         //console.log("test");
-        return this.scenes[0];
+        return this.scenes[this.currentSceneIndex];
         
         //return this.scenes[currentScene];
     }
 
     getGobjects() {
-        return this.scenes[this.currentScene].getGobjects();
+        return this.scenes[this.currentSceneIndex].getGobjects();
     }
-/*     goToNextScene() {
-
+    goToNextScene() {
+        this.currentSceneIndex++;
     }
 
-    goToPreviousScene() {
+/*    goToPreviousScene() {
 
     } */ //not necesary?
 
@@ -74,6 +74,17 @@ class TurquoiseState {
         }
     }
 
+    getTopObjectAtPositionIfInteractableElseFalse(clicked) {
+        if (this.interactable) {
+            for (let i = (this.getGobjects().length - 1); (i > -1); i--) {
+                if ((this.getGobjects()[i].doCoordsCollideWithThis(clicked)) && (this.getGobjects()[i].interactable)) {
+                    return this.getGobjects()[i];
+                }
+            }
+        }
+        return false;
+    }
+
 }
 
 class Scene {
@@ -84,7 +95,7 @@ class Scene {
         console.log(gameState);
     }
     spawn() {
-        while (this.spawners.length > 0) {
+        while (this.spawners.length > 0) { //this while loop is disconcerting. Easy fix could stop this from potentially looping forever. For loop through then remove them at the end?
             this.gobjects = this.gobjects.concat(this.spawners[0].spawned);
             this.spawners.splice(0,1);
         }

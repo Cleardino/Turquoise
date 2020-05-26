@@ -3,7 +3,7 @@ var ctx = c.getContext("2d"); //removing var shouldn't break it
 //var trueSize = true;
 var userIsUsingiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; //this code detecting if user is on iOS is from Stack Exchange, but I think it's ok since its basically one line
 //console.log(iOS);
-var runSettings = {developerMode: true, trueSize: false};
+var runSettings = {developerMode: true, trueSize: false, customCursors: true};
 
 //Global variables describing window size, canvas size, and how the canvas is being drawn in CSS
 var canvasSize = {width: c.width, height: c.height};
@@ -25,7 +25,11 @@ function run() {
     if (!developerModeVariables.freeze) {
       gameState.update();
       gameRender.draw(gameState);
-      gameInput.updateCursorHover();
+      gameInput.updateOngoingInput();
+      
+      //ctx.filter = 'url(#remove-alpha)';
+      //ctx.font = "16px ChiKareGo2";
+      //ctx.fillText("oh myyy goood im so glad this works", 12, 40);
     }
     
     //examplePoint.draw();
@@ -72,19 +76,29 @@ let examplePoint = new Point(10,10);
 //let line1 = new Line(new Position(10,10), new Position(20, 200));
 //let line2 = new Line(new Position(150,150), new Position(5, 20));
 //let line3 = new Line(new Position(80,70), new Position(100,50));
-let testswitch = new BetterTestSwitch("switch1", new Position(500,0));
-let testswitch2 = new BetterTestSwitch("switch2", new Position(500,200));
-let mouse = new SpriteObject("mouse", new Position(0,90), 385, 270, "images/mouse.png");
+//let testswitch = new BetterTestSwitch("switch1", new Position(500,0));
+//let testswitch = new TwoStateSpriteObject("switch1", new Position(500,0), 150, 150, "images/switch/switch1.png", "images/switch/switch5.png", ["images/switch/switch2.png","images/switch/switch3.png","images/switch/switch4.png"]);
+
+//let testswitch = new TwoStateSpriteObject("switch1", new Position(500,0), 150, 150, "images/switch/switch1.png", "images/switch/switch5.png", ["images/switch/switch2.png","images/switch/switch3.png","images/switch/switch4.png"], 5, [[54, 61], [124, 91], [111, 146], [75, 150], [4, 115], [2, 82], [9, 15], [35, 13]], [[6, 104], [6, 82], [29, 63], [81, 85], [119, 49], [136, 59], [133, 81], [112, 136], [102, 150], [91, 150]]);
+let testswitch = new DragSwitch(new Position(500,0));
+//let testswitch2 = new BetterTestSwitch("switch2", new Position(500,200));
+let mouse = new SpriteObject("mouse", new Position(138,0), 385, 270, "images/mouse.png");
 let triangle = new Shape([new Point(517, 124), new Point(512, 180), new Point(416, 156)]);
+
+let title = new SpriteObject("title", new Position(128,254), 378, 81, "images/Fromagerie.png");
+let playButton = new PlayButton(new Position(185, 225));
 
 //texasShape = new Shape([new Point(171,108), new Point(212,110), new Point(216,138), new Point(315,159),  new Point(324,221), new Point(268,255), new Point(267,293), new Point(236,287), new Point(196,225),new Point(170,225),new Point(160,235),new Point(107,188),new Point(171,188)]);
 
 
 
 //console.log(line1.isIntersecting(line2));
+let titleScreen = new Scene("TitleScreen", [title, mouse, playButton], [texas]);
+titleScreen.spawn();
 
-let bouncyScene = new Scene("BouncyScene", [testswitch,testswitch2,mouse], [/*dvdSpawner, bdSpawner, marioSpawner, */texas]);
+let bouncyScene = new Scene("BouncyScene", [testswitch/*,testswitch2,mouse*/], [/*dvdSpawner, bdSpawner, marioSpawner,texas*/]);
 bouncyScene.spawn();
+gameState.addScene(titleScreen);
 gameState.addScene(bouncyScene);
 
 let gameRender = new TurquoiseRender(c, ctx);
@@ -104,7 +118,9 @@ updateGlobalCanvasPositionAndSizeCache();
 
 //noContext = document.getElementById('noContextMenu');
 
-
+if(runSettings.customCursors) {
+  c.style.cursor = 'none';
+}
 
 
 run();
