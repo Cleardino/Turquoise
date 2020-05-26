@@ -1,7 +1,7 @@
 //(I know this file is a nightmare. - Elliot)
 
-var developerModes = {makeClickShape: false};
-var developerModeVariables = {freeze: false, relativeX: null, relativeY: null, generateClickShapePoints: false, generatedPoints: "", objectBeingSelected: null, oldpx: null, oldpy: null, numberOfPoints: 0, firstpx: null, firstpy: null, selectedObjHeight: null, selectedObjWidth: null, exitClickboxMakerNextClick: false};
+var developerModes = {makeClickShape: false, moveMode: false};
+var developerModeVariables = {freeze: false, relativeX: null, relativeY: null, generateClickShapePoints: false, generatedPoints: "", objectBeingSelected: null, oldpx: null, oldpy: null, numberOfPoints: 0, firstpx: null, firstpy: null, selectedObjHeight: null, selectedObjWidth: null, exitClickboxMakerNextClick: false, movingObject: false};
 
 function giveDevToolsObjectClicked(objClicked) {
     if (developerModes.makeClickShape) {
@@ -19,6 +19,7 @@ function giveDevToolsObjectClicked(objClicked) {
             console.log('Click on the object again to continue.');
             developerModeVariables.freeze = true;
             c.style.cursor = "auto";
+            runSettings.customCursors = false;
             developerModeVariables.objectBeingSelected = objClicked;
             //console.lo
         }
@@ -47,12 +48,22 @@ function giveDevToolsObjectClicked(objClicked) {
             developerModeVariables.selectedObjWidth = objClicked.width;
             gameState.interactable = objClicked;
             console.log("Now click to place the first point of the new Clickbox.");
-        }
+        } 
+    }
+    if(developerModes.moveMode) {
+        console.log("Click anywhere to move this object there.");
+        developerModeVariables.freeze = true;
+        developerModeVariables.movingObject = true;
+        developerModeVariables.objectBeingSelected = objClicked;
+        gameState.interactable = false;
+        c.style.cursor = "auto";
+        runSettings.customCursors = false;
     }
 }
 
 function giveDevToolsClickEvent(clicked) {
     if (developerModeVariables.generateClickShapePoints) {
+        this.c.style.cursor = "auto";
         //developerModeVariables.objectBeingSelected.onClickOrTap();
         if(developerModeVariables.exitClickboxMakerNextClick) {
             developerModeVariables = {freeze: false, relativeX: null, relativeY: null, generateClickShapePoints: false, generatedPoints: "", objectBeingSelected: null, oldpx: null, oldpy: null, numberOfPoints: 0, firstpx: null, firstpy: null, selectedObjHeight: null, selectedObjWidth: null, exitClickboxMakerNextClick: false};
@@ -89,16 +100,18 @@ function giveDevToolsClickEvent(clicked) {
                 developerModeVariables.firstpx = newpx;
                 developerModeVariables.firstpy = newpy;
             }
-
-            if (newpx < 0) {
-                newpx = 0;
+            if(false) { //set this to true to lock within image dimensions, TODO make this automatic
+                if (newpx < 0) {
+                    newpx = 0;
+                }
+                if (newpy < 0) {
+                    newpy = 0;
+                }
+                if (newpy > developerModeVariables.selectedObjHeight) {
+                    newpy = developerModeVariables.selectedObjHeight;
+                }
             }
-            if (newpy < 0) {
-                newpy = 0;
-            }
-            if (newpy > developerModeVariables.selectedObjHeight) {
-                newpy = developerModeVariables.selectedObjHeight;
-            }
+            
             //console.log("heihgt" + developerModeVariables.objectBeingSelected.height);
             if (newpx > developerModeVariables.selectedObjWidth) {
                 newpx = developerModeVariables.selectedObjWidth;
@@ -140,12 +153,32 @@ function giveDevToolsClickEvent(clicked) {
         
 
     }
+    if(developerModeVariables.movingObject) {
+            //console.log(developerModeVariables.objectBeingSelected);
+            console.log("("+clicked.x+", "+clicked.y+")");
+            developerModeVariables.objectBeingSelected.visibile = false;
+            gameRender.draw(gameState);
+            developerModeVariables.objectBeingSelected.visibile = true;
+            developerModeVariables.objectBeingSelected.draw(clicked.x, clicked.y);
+            //ctx.drawImage(developerModeVariables.objectBeingSelected.getImage(), clicked.x, clicked.y, developerModeVariables.objectBeingSelected.width, developerModeVariables.objectBeingSelected.height);
+            //developerModeVariables.objectBeingSelected.visibile = true;
+    }
 }
 
 
 function giveDevtoolsKeyEvent(event) {
     if (event.key == "c") {
-        console.log("Make Clickbox Mode Activated on the next Object clicked.");
+        console.log("Make ClickShape Mode Activated on next Object clicked.");
         developerModes.makeClickShape = true;
+    }
+    if (event.key == 'm') {
+        console.log("Move Object Mode Activated on next Object clicked");
+        developerModes.moveMode = true;
+    }
+    if (event.key ==="Escape") {
+        developerModeVariables = {freeze: false, relativeX: null, relativeY: null, generateClickShapePoints: false, generatedPoints: "", objectBeingSelected: null, oldpx: null, oldpy: null, numberOfPoints: 0, firstpx: null, firstpy: null, selectedObjHeight: null, selectedObjWidth: null, exitClickboxMakerNextClick: false};
+            developerModes.makeClickShape = false;
+            developerModes.moveMode = false;
+            gameState.interactable = true;
     }
 }

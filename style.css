@@ -32,6 +32,13 @@ canvas {
     display: block;
     margin: auto; /*this used to be 0 auto*/
 
+    /*cursor: none;*/
+
+}
+
+@font-face {
+    font-family: 'ChiKareGo2';
+    src: url('/fonts/ChiKareGo2.ttf');
 }
 
 /*.holder {
