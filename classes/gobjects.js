@@ -343,7 +343,7 @@ class TestBall2 extends TestBall {
 
     onOwnedInputEnd() {
         super.onOwnedInputEnd();
-        let maximumThrowVelocity = 3;
+        let maximumThrowVelocity = 5;
         if(this.lastFivePositionsDuringMove.length==5) {
             let newvx = (this.lastFivePositionsDuringMove[this.lastFivePositionsDuringMove.length - 1].x - this.lastFivePositionsDuringMove[0].x)/4;
             let newvy = (this.lastFivePositionsDuringMove[this.lastFivePositionsDuringMove.length - 1].y - this.lastFivePositionsDuringMove[0].y)/4;
