@@ -4,20 +4,22 @@ class TurquoiseInput {
         this.gameState = gameState;
         this.hover = new Position(-1, -1);
         this.cursorCSSStyleSetToHovering = false;
-        var self = this;
+        var self = this;  //Is this weird.. realising it probably is..
         this.cursor = new Image();
         this.cursor.src = "images/cursor/macwhitestroke.png"
         this.hand = new Image();
         this.hand.src = "images/cursor/handv2.png"
         this.pointer = new Image();
         this.pointer.src = "images/cursor/macpointer.png"
+        this.pressedPointer = new Image();
+        this.pressedPointer.src = "images/cursor/macpointerpressed.png"
         this.mouseDown = false;
         this.grabhand;
-        this.doClosedHand = false;
+        this.usePressedCursor = false;
         this.closedHand = new Image();
         this.closedHand.src = "images/cursor/machold.png"
         this.executeClick = false; //This allows click events to be cancelled if user leaves click area during cloesd hand
-        this.objectLastClicked;
+        this.currentlyClicking;
         this.objectLastHovering;
         this.isMouseDown = false;
         this.ongoingTouches = [];
@@ -58,6 +60,10 @@ class TurquoiseInput {
         c.addEventListener('mousemove', function(event) {
             event.preventDefault();
             self.hover = getPositionFromEvent(event);
+            if(self.currentlyClicking) {
+                self.currentlyClicking.onOwnedInputMove(self.hover);
+            }  
+            
             //console.log(self.hover);
             //examplePoint.x = self.hover.x;
             //examplePoint.y = self.hover.y;
@@ -72,16 +78,22 @@ class TurquoiseInput {
 
 
         c.addEventListener('mousedown', e=> {
-            if(this.grabhand) {
-                this.doClosedHand = true;
-            }
+            /* if(this.grabhand) {
+                this.usePressedCursor = true;
+            } */
+            this.usePressedCursor = true;
             this.isMouseDown = true;
             this.executeClick = true;
             let clicked = getPositionFromEvent(e);
             let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(clicked);
                 if(o){
-                    o.onMouseOrTapDown();
-                    this.objectLastClicked = o;
+                    if(o.beingGrabbed) {
+                        this.severObjectFromOtherTouch(o);
+                    }
+                    o.onMouseOrTapDown(clicked);
+                    this.currentlyClicking = o;
+                    
+                    
                 }
 
             //I do this in multiple places to prevent it from mysteriously being overridden oops a bit messy
@@ -92,17 +104,21 @@ class TurquoiseInput {
 
         c.addEventListener('mouseup', e => {
             //console.log("mouseupdetected");
-            this.doClosedHand = false;
+            this.usePressedCursor = false;
             this.isMouseDown = false;
             let clicked = getPositionFromEvent(e);
             let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(clicked);
             if(o) {
-                if(o === this.objectLastClicked && this.executeClick) {
+                if(o === this.currentlyClicking && this.executeClick) {
                     o.onClickOrTap();
                 }
                 
             }
-            this.objectLastClicked = undefined;
+            if(this.currentlyClicking != undefined) {
+                this.currentlyClicking.onOwnedInputEnd();
+                this.currentlyClicking = undefined;
+            }
+            
             
             if(runSettings.developerMode) {
                 giveDevToolsClickEvent(clicked);
@@ -116,7 +132,7 @@ class TurquoiseInput {
         });
 
         c.addEventListener('mouseleave', e => {
-            this.doClosedHand = false;
+            this.usePressedCursor = false;
             //console.log("bye");
             if(this.objectLastHovering) {
                 this.objectLastHovering.onMouseEndHover();
@@ -127,9 +143,14 @@ class TurquoiseInput {
                 }
                 this.objectLastHovering = undefined;
             }
+            if(this.currentlyClicking != undefined) {
+                this.currentlyClicking.onOwnedInputEnd();
+                this.currentlyClicking = undefined;
+            }
             this.hover.set(-1, -1);
         });
 
+        //The way that it handles Touch Events heavily borrows from the example at https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
         c.addEventListener('touchstart', e => {
             e.preventDefault();
             updateGlobalCanvasPositionAndSizeCache();
@@ -141,11 +162,21 @@ class TurquoiseInput {
             for(let i = 0; i < touchStarts.length; i++) {
                 let p = getPositionFromEvent(touchStarts[i]);
                 let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(p);
-                self.ongoingTouches.push(copyTouchAndAppendObject(touchStarts[i], p, o));
-                if(o){
-                    o.onMouseOrTapDown();
+                if(o && o.beingGrabbed) {
+                    this.severObjectFromOtherTouch(o);
+                    if(this.currentlyClicking === o) {
+                        this.currentlyClicking.onOwnedInputEnd();
+                        this.currentlyClicking = false;
+                    }
+                    self.ongoingTouches.push(copyTouchAndAppendObject(touchStarts[i], p, o));
+                    o.onMouseOrTapDown(p);
+                }
+                if(o && !o.beingGrabbed){
+                    self.ongoingTouches.push(copyTouchAndAppendObject(touchStarts[i], p, o));
+                    o.onMouseOrTapDown(p);
                 }
             }
+            console.log(self.ongoingTouches);
             
             
             
@@ -159,6 +190,9 @@ class TurquoiseInput {
                 let idx = self.ongoingTouchIndexById(touches[i].identifier);
                 if (idx >=0) {
                     self.ongoingTouches[idx].currentPosition = p;
+                    if(self.ongoingTouches[idx].tapBeganOnObject) {
+                        self.ongoingTouches[idx].tapBeganOnObject.onOwnedInputMove(p);
+                    }
                 }
             }
 
@@ -172,10 +206,15 @@ class TurquoiseInput {
                 let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(p);
                 let idx = self.ongoingTouchIndexById(touchEnds[i].identifier);
                 if(idx >= 0) {
-                    if(o && (self.ongoingTouches[idx].tapBeganOnObject === o)) {
+                    if(o && (self.ongoingTouches[idx].tapBeganOnObject === o) && (!self.ongoingTouches[idx].cancelTap)) {
                         o.onClickOrTap();
                     }
+                    if(self.ongoingTouches[idx].tapBeganOnObject) {
+                        self.ongoingTouches[idx].tapBeganOnObject.onOwnedInputEnd();
+                    }
                     self.ongoingTouches.splice(idx, 1);
+                    console.log("removed touch");
+                    console.log(self.ongoingTouches);
                 }
             }
 
@@ -187,6 +226,9 @@ class TurquoiseInput {
             for(let i = 0; i < touchCancels.length; i++) {
                 let idx = self.ongoingTouchIndexById(touchCancels[i].identifier);
                 if(idx>= 0){ 
+                    if(self.ongoingTouches[idx].tapBeganOnObject) {
+                        self.ongoingTouches[idx].tapBeganOnObject.onOwnedInputEnd();
+                    }
                     self.ongoingTouches.splice(idx, 1);
                 }
             }
@@ -227,71 +269,85 @@ class TurquoiseInput {
     } */
 
     updateOngoingInput() {
+        this.updateMouse();
+        this.updateTouches();
+    }
+
+
+    updateTouches() {
+        for (let i = 0; i < this.ongoingTouches.length; i++) {
+            let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(this.ongoingTouches[i].currentPosition);
+            if (this.ongoingTouches[i].tapBeganOnObject) {
+                if (!(this.ongoingTouches[i].tapBeganOnObject === o) && (!this.ongoingTouches[i].cancelTap)) {
+                    this.ongoingTouches[i].tapBeganOnObject.onMouseOrTapExit();
+                    this.ongoingTouches[i].tapBeganOnObject.onClickOrTapExit(this.ongoingTouches[i].currentPosition);
+                    this.ongoingTouches[i].cancelTap = true;
+                }
+            }
+        }
+    }
+
+    updateMouse() {
         this.grabhand = false;
         this.pointerhand = false;
         if (this.usingMouse()) {
-            
             let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(this.hover);
-            if(o){
-                if(this.objectLastHovering==undefined) {
+            if (o) {
+                if (this.objectLastHovering == undefined) {
                     o.onMouseStartHover();
                 }
                 //o.onMouseHover();
-                if(this.objectLastHovering && (o != this.objectLastHovering)) {
+                if (this.objectLastHovering && (o != this.objectLastHovering)) {
                     this.objectLastHovering.onMouseOrTapExit();
                     this.objectLastHovering.onMouseEndHover();
-                    this.doClosedHand = false; //?????
+                    this.usePressedCursor = false; //?????
                     //console.log("mousedown =" +this.mouseDown);
                     o.onMouseStartHover();
-                    if(this.isMouseDown) {
+                    if (this.isMouseDown) {
                         this.executeClick = false;
                         this.objectLastHovering.onClickOrTapExit(this.hover);
                         //console.log("tried to disable closed hand");
-                        this.doClosedHand = false;
+                        this.usePressedCursor = false;
                         this.isMouseDown = false; //recvent addition
-                        
-                    } 
-
-                }
-                this.objectLastHovering = o;
-                if(this.objectLastHovering && this.objectLastClicked && this.objectLastHovering){
-                    if(this.objectLastHovering != this.objectLastClicked) {
-                        //this.objectLastClicked.onMouseOrTapExit();
-                        //this.objectLastClicked.onMouseEndHover();
-                        if(this.isMouseDown){
-                            this.executeClick = false;
-                            this.objectLastClicked.onClickOrTapExit(this.hover);
-                            //console.log("tried to disable closed hand");
-                            this.doClosedHand = false;
-                            this.isMouseDown = false; // recent addition
-                        }
-                        this.objectLastClicked = undefined;
                     }
                 }
-                
-
-                if(o.isRequestingHoverhand()){
+                this.objectLastHovering = o;
+                if (this.objectLastHovering && this.currentlyClicking && this.objectLastHovering) {
+                    if (this.objectLastHovering != this.currentlyClicking) {
+                        //this.objectLastClicked.onMouseOrTapExit();
+                        //this.objectLastClicked.onMouseEndHover();
+                        if (this.isMouseDown) {
+                            this.executeClick = false;
+                            this.currentlyClicking.onClickOrTapExit(this.hover);
+                            //console.log("tried to disable closed hand");
+                            this.usePressedCursor = false;
+                            this.isMouseDown = false; // recent addition
+                        }
+                        this.currentlyClicking = undefined;
+                    }
+                }
+                if (o.isRequestingHoverhand()) {
                     this.grabhand = true;
                 }
-                if(o.isRequestingPointerhand()){
+                if (o.isRequestingPointerhand()) {
                     this.pointerhand = true;
                 }
-            } else {
-                if(this.objectLastHovering) {
+            }
+            else {
+                if (this.objectLastHovering) {
                     this.objectLastHovering.onMouseEndHover();
                     this.objectLastHovering.onMouseOrTapExit();
-                    if(this.isMouseDown) {
+                    if (this.isMouseDown) {
                         this.executeClick = false;
                         this.objectLastHovering.onClickOrTapExit(this.hover);
-                        this.doClosedHand = false;
+                        this.usePressedCursor = false;
                         this.isMouseDown = false; //recent addition
                         //console.log("tried to disable closed hand");
                     }
-                } 
+                }
                 this.objectLastHovering = undefined;
                 this.grabhand = false;
             }
-
             /* for (var i = 0; i < gameState.getGobjects().length; i++) {
                 //console.log(gameState.getGobjects()[i]);
                 //console.log(hoverX + ", " + hoverY);
@@ -302,34 +358,20 @@ class TurquoiseInput {
                     }
                     this.gameState.getGobjects()[i].onMouseHover();
                     
-                } 
+                }
                 //console.log(this.hoverX + ", "+ this.hoverY);
                 //console.log(gameState.getGobjects()[i].doCoordsCollideWithThis(this.hoverX, this.hoverY));
             } */
         }
-
-        if(this.usingMouse()){ 
-            if (runSettings.customCursors) { 
+        if (this.usingMouse()) {
+            if (runSettings.customCursors) {
                 this.drawCustomCursor();
-            } else {
+            }
+            else {
                 this.updateCursorCSSStyle();
             }
         }
-
-        for(let i = 0; i < this.ongoingTouches.length; i++) {
-            let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(this.ongoingTouches[i].currentPosition);
-            if(this.ongoingTouches[i].tapBeganOnObject) {
-                if(!(this.ongoingTouches[i].tapBeganOnObject === o)) {
-                    this.ongoingTouches[i].tapBeganOnObject.onMouseOrTapExit();
-                    this.ongoingTouches[i].tapBeganOnObject.onClickOrTapExit(this.ongoingTouches[i].currentPosition);
-                    this.ongoingTouches[i].tapBeganOnObject = false; //at the moment, after touch leaves object it forgets what object it started with for simplicity until I really have a reason to remember that.
-                }
-            }
-            
-        }
-        
     }
-
 
     updateCursorCSSStyle() {
         if (this.grabhand) {
@@ -351,24 +393,26 @@ class TurquoiseInput {
     }
 
     drawCustomCursor() {
-        if (this.grabhand && this.doClosedHand) {
+        if (this.grabhand && this.usePressedCursor) {
             ctx.drawImage(this.closedHand, this.hover.x + 2, this.hover.y + 4, 13, 12);
         }
         else if (this.grabhand) {
             ctx.drawImage(this.hand, this.hover.x, this.hover.y, 16, 16);
         }
-        else if (this.pointerhand){
+        else if (this.pointerhand && this.usePressedCursor) {
+            ctx.drawImage(this.pressedPointer, this.hover.x, this.hover.y, 16, 16);
+        } else if (this.pointerhand){
             ctx.drawImage(this.pointer, this.hover.x, this.hover.y, 16, 16);
         } else {
             ctx.drawImage(this.cursor, this.hover.x, this.hover.y, 11, 16);
-            if (this.doClosedHand) {
-                this.doClosedHand = false;
+            if (this.usePressedCursor) {
+                this.usePressedCursor = false;
                 this.executeClick = false;
             }
         }
     }
 
-    //This function is from https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
+    //This function is from the example in https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
     ongoingTouchIndexById(idToFind) {
         for (var i = 0; i < this.ongoingTouches.length; i++) {
             var id = this.ongoingTouches[i].identifier;
@@ -379,18 +423,23 @@ class TurquoiseInput {
           }
           return -1;    // not found
     }
+
+    severObjectFromOtherTouch(gobject) {
+        for(let i = 0; i < this.ongoingTouches.length; i++) {
+            if(this.ongoingTouches[i].tapBeganOnObject && this.ongoingTouches[i].tapBeganOnObject === gobject) {
+                this.ongoingTouches[i].tapBeganOnObject.onOwnedInputEnd();
+                this.ongoingTouches[i].tapBeganOnObject = false;
+            }
+        }
+    }
 }
 
 
 
-//This function is based on https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
+//This function is based on the example in https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
 function copyTouchAndAppendObject({ identifier }, currentPosition, tapBeganOnObject = false) {
-    return { identifier, currentPosition, tapBeganOnObject};
+    return { identifier, currentPosition, tapBeganOnObject, cancelTap: false};
   }
 
-/* class OngoingTouch{
-    constructor(touchEvent, tapBeganOnObject = false) {
-        this.touchEvent = touchEvent;
-        this.tapBeganOnObject = tapBeganOnObject;
-    }
-} */
+
+

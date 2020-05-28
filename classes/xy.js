@@ -11,6 +11,10 @@ class XY {
         this.x = this.x+otherXY.x;
         this.y = this.y+otherXY.y;
     }
+    subtract(otherXY) {
+        this.x = this.x-otherXY.x;
+        this.y = this.y-otherXY.y;
+    }
 }
 
 class Velocity extends XY {

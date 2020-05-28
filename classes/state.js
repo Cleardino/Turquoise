@@ -56,14 +56,24 @@ class TurquoiseState {
 
     } */ //not necesary?
 
-    //goToScene(name) {
+    //goToScene(name)? {
 
     //}
 
     update() {
+
+        
+        //console.log(this.getNumberOfTopBillers());
+
         for (let i = 0; i < this.getGobjects().length; i++) {
             this.getGobjects()[i].update();
             //console.log(gameState.getGobjects());
+            if(this.getGobjects()[i].requestsTopBilling && (i < (this.getGobjects().length - this.getNumberOfTopBillers()))) {
+                let sliced = this.getGobjects().splice(i, 1);
+                console.log(this.getGobjects());
+                this.getGobjects().push(sliced[0]);
+                i--;
+            }
             if (this.getGobjects()[i].isRequestingDestroy()) {
                 this.getCurrentScene().destroyGobject(i);
                 //console.log(gameState.getGobjects());
@@ -72,6 +82,18 @@ class TurquoiseState {
             }
             
         }
+    }
+
+
+    //return how many objects are requesting top billing
+    getNumberOfTopBillers() {
+        let numberOfTopBillers = 0;
+        for (let i = 0; i < this.getGobjects().length; i++) {
+            if (this.getGobjects()[i].requestsTopBilling) {
+                numberOfTopBillers++;
+            }
+        }
+        return numberOfTopBillers;
     }
 
     getTopObjectAtPositionIfInteractableElseFalse(clicked) {
@@ -92,7 +114,6 @@ class Scene {
         this.name = name;
         this.gobjects = gobjects;
         this.spawners = spawners;
-        console.log(gameState);
     }
     spawn() {
         while (this.spawners.length > 0) { //this while loop is disconcerting. Easy fix could stop this from potentially looping forever. For loop through then remove them at the end?
