@@ -220,12 +220,11 @@ class SpriteObject {
     }
 }
 
-/* class DraggableSprite extends SpriteObject { //rush copypaste of ball, but feel free to revive
+class DraggableSprite extends SpriteObject { //rush copypaste of ball, but feel free to revive
     constructor(name, position, width, height, imgURL, clickshape){
         super(name, position, width, height, imgURL, clickshape);
         this.whereGrabbed = new Position(0,0);
         this.hoverhand = true;
-        //this.friction = 1;
     }
     onMouseOrTapDown(position) {
         this.beingGrabbed = true;
@@ -245,11 +244,11 @@ class SpriteObject {
     }
 
 
-} */
+}
 
 class TestBall extends SpriteObject {
     constructor(position){
-        super("TestBall", position, 68, 67, "images/ball.png",[[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]]);
+        super("TestBall", position, 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]]);
         this.whereGrabbed = new Position(0,0);
         this.hoverhand = true;
     }
@@ -304,6 +303,15 @@ class TestBall2 extends TestBall {
     }
 
     updatePosition() {
+        let xstopped = false;
+        let ystopped = false;
+        if(this.velocity.x == 0) {
+            xstopped = true;
+        }
+        if(this.velocity.y == 0) {
+            ystopped = true;
+        }
+
         this.position.add(this.velocity);
         //console.log(this.velocity.x + "-=" + this.friction);
         if((this.velocity.x > 0) && (this.velocity.x > this.friction)) {
@@ -316,7 +324,6 @@ class TestBall2 extends TestBall {
         if((this.velocity.y > 0) && (this.velocity.y > this.friction)) {
             this.velocity.y -= this.friction;
             if(this.velocity.y <= (this.friction)) {
-                console.log("woa");
                 this.velocity.y = 0;
             }
             //console.log(this.velocity.x+"woa");
@@ -332,7 +339,7 @@ class TestBall2 extends TestBall {
         if((this.velocity.y < 0) && (this.velocity.y < -this.friction)) {
             this.velocity.y += this.friction;
             if(this.velocity.y >= (-this.friction)) {
-                console.log("woa");
+                //console.log("woa");
                 this.velocity.y = 0;
             }
             
@@ -343,10 +350,10 @@ class TestBall2 extends TestBall {
 
     onOwnedInputEnd() {
         super.onOwnedInputEnd();
-        let maximumThrowVelocity = 5;
+        let maximumThrowVelocity = 10;
         if(this.lastFivePositionsDuringMove.length==5) {
-            let newvx = (this.lastFivePositionsDuringMove[this.lastFivePositionsDuringMove.length - 1].x - this.lastFivePositionsDuringMove[0].x)/4;
-            let newvy = (this.lastFivePositionsDuringMove[this.lastFivePositionsDuringMove.length - 1].y - this.lastFivePositionsDuringMove[0].y)/4;
+            let newvx = ((this.lastFivePositionsDuringMove[this.lastFivePositionsDuringMove.length - 1].x - this.lastFivePositionsDuringMove[0].x)/5); //got rid of /4
+            let newvy = ((this.lastFivePositionsDuringMove[this.lastFivePositionsDuringMove.length - 1].y - this.lastFivePositionsDuringMove[0].y)/5); //got rid of /4
             if(newvx > maximumThrowVelocity) {
                 newvx = maximumThrowVelocity;
             }
