@@ -22,16 +22,15 @@ canvas {
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
-    /*position: absolute;*/
+    position: absolute; /*comment out*/
     user-select: false;
-    /*top:%;*/
     -webkit-touch-callout: none;
     
     /*vertical-align: middle;*/
     background-color: white;
-    padding: 0;
-    display: block;
-    margin: auto; /*this used to be 0 auto*/
+    /*padding: 0;*/
+    /*display: block; put this back if needed*/
+    /*margin: auto; just commented out*//*this used to be 0 auto*/
 
     /*cursor: none;*/
 

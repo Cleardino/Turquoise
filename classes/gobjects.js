@@ -1,3 +1,4 @@
+/*Default Game Object*/
 class SpriteObject {
     constructor(name, position, width, height, imgURL, clickShapeNums) {
         this.updateEveryFrame = true;
@@ -8,8 +9,11 @@ class SpriteObject {
             this.img[0].src = imgURL;
         }
         this.frameIndex = 0; //This index determines the index to use with both ClickShape, and Animation Frames, so they aught to match if you need a unique clickshape every frame. This is a bad way of doing things.
+        
+        //Sprite Dimensions
         this.width = width;
         this.height = height;
+
         this.velocity = new Velocity(0,0);
         this.opacity = 1;
         this.visible;
@@ -20,50 +24,51 @@ class SpriteObject {
         this.willDestroyWhenInvisible = false;
         this.requestsDestroy;
         this.requestsDestroy = false;
+
+        //If not interactable, no input functions will be caled
         this.interactable;
         this.interactable = true;
         this.fadeSpeed;
+
+        //Bools to request different cursors
         this.hoverhand;
         this.hoverhand = false;
         this.pointerhand;
         this.pointerhand = false;
+
         this.clickRectanglePadding = 0;
-        //this.usePolyForHitDetection;
-        //this.usePolyForHitDetection = false;
+        
+        //(explained below)
         this.clickShapePoints = [];
         this.relativeClickshape;
+        
+        //If you set this to true, it will be moved on top of all other objects. Used when user drags objects.
         this.requestsTopBilling = false;
         this.beingGrabbed = false;
-        //this.alreadyDevClicked = false;
-        //this.clickShapeNums = clickShapeNums;
-        //console.log(clickShapeNums).length;
 
+        //By default, an Object's Clickable area is a rectangle the size of its sprite. This can be padded outward by increasing this.clickRectanglePadding
+        //Alternately, you can provide the Constructor with a "Clickshape", which is a polygon of any number of vertices, to serve as an objects clickable area.
+        //It expects to receive a Clickbox as an array of arrays, which can be generated using the Devtools.
+        //If you need an object to change its Clickshape depending on its state, you can provide the constructor with an array of Clickshapes, then it will use whatever clickshape is at the index of the animation frame it is currently on.
+
+        //If only one Clickshape is provided, it puts it as the only element in an array, so that it can deal with it the same as an array of Clickshapes.
         if (clickShapeNums) {
             if (!(Array.isArray(clickShapeNums[0][0]))) {
                 clickShapeNums = [clickShapeNums];
-                //console.log(this.name);
-                //console.log(clickShapeNums)
-            } else {
-                //console.log("got a superrayyyy");
-                //console.log(clickShapeNums.length);
-            }
+
+            } 
+            //To make it easy to do math on a clickshape later, it converts it into an arrray of points.
             for(let o = 0; o < clickShapeNums.length; o++) {
                 this.clickShapePoints.push([]);
                 for(let i = 0; i < clickShapeNums[o].length; i++) {
                     this.clickShapePoints[o].push(new Point(clickShapeNums[o][i][0], clickShapeNums[o][i][1]))
-                    //console.log(this.name);
-                    //console.log(this.clickShapePoints);
-                    //console.log("hi");
                 }
             }
-            //console.log("it's happening");
 
         }
-        //console.log(this.clickShapePoints);
-        //console.log(this.fadeOut);
-        //console.log(this.visibile);
     }
     
+    //Draws object to canvas. Called by GameRender on every object in the current scene every loop.
     draw(x = Math.round(this.position.x), y = Math.round(this.position.y)) {
         ctx.globalAlpha = this.opacity;
         ctx.drawImage(this.getImage(), x, y, this.width, this.height);
@@ -74,6 +79,7 @@ class SpriteObject {
         return this.name;
     }
 
+    //Called every loop by gameState
     update() {
         this.updatePosition();
         this.updateFadeout();
@@ -103,16 +109,10 @@ class SpriteObject {
         }
     }
 
+    //Given X,Y Coordinates in the form of a Position Object, returns true if those coords are inside the object.
+    //Collission based on either a rectangle the size of the sprite, or the Clickshape if provided.
+    //This is called to determine what the mouse is clicking on
     doCoordsCollideWithThis(givenPosition) {
-
-        //this.relativeClickshape = null;
-        //console.log(this.relativeClickshape);
-
-        /* if (this.clickShapePoints[this.frameIndex].length < 3) {
-            //TODO THERE IS A BETTER FIX TO ALL THIS
-            //console.log('Trying to detect collision with Clickbox with fewer than 3 points');
-            return false;
-        } */
 
         if (isPositionWithinRectangle(givenPosition, this.position.x-this.clickRectanglePadding, (this.position.x + (this.width) + this.clickRectanglePadding), this.position.y - this.clickRectanglePadding, (this.position.y + (this.height) + this.clickRectanglePadding))) {
             if (this.clickShapePoints && (this.clickShapePoints.length == 1)) {
@@ -138,6 +138,7 @@ class SpriteObject {
         
         
     }
+    //Helper function for collision
     getRelativeClickShapeFromPoints(arrayOfPoints) {
         let tempPoints = [];
         let px;
@@ -150,7 +151,7 @@ class SpriteObject {
         return new Shape(tempPoints);
     }
 
-    //Speed means how fast to fade, thenDestory means whether the object is destroyed after fadeout
+    //Call to make the object fade out. Speed means how fast to fade, thenDestory means whether the object is destroyed after fadeout
     startFadeout(speed = 0.05, willDestroyWhenInvisible = true, interactable = false) {
         this.fadeOut = true;
         this.fadeSpeed = speed;
@@ -174,6 +175,10 @@ class SpriteObject {
     isRequestingDestroy() {
         return this.requestsDestroy;
     }
+
+    /***THESE FUNCTIONS ARE CALLED IN RESPONSE TO PLAYER INPUT. (tho not called if interactable is set to false)*/
+
+    //This is called when the object is clicked or tapped on. (A complete Mousedown and Mouseup/tapdown and tapup)
     onClickOrTap() {
         
         if(runSettings.developerMode) {
@@ -186,21 +191,36 @@ class SpriteObject {
         //console.log("OnMouseOrTapDown" + this.name);
     }
 
+    //If a click or tap begins on an object, then that object will continue to receive that input's position through this function until the user lifts the mouse or finger.
     onOwnedInputMove(position) {
 
     }
-
+    //Called when a click or touch which began on this object ends.
     onOwnedInputEnd() {
 
     }
-
-    onClickOrTapExit(position = undefined) { //Called if actively held down cursor or actively held tap leaves the object
+    
+    //Called if actively held down cursor or actively held tap leaves the object
+    onClickOrTapExit(position = undefined) { 
         //console.log("onClickOrTapExit" + this.name);
     }
 
-    onMouseOrTapExit() { //Called if any cursor or actively held tap leaves the object
+    //Called if any cursor or actively held tap leaves the object. Similar to previous except this also includes Mouse Hover.
+    onMouseOrTapExit() { 
         //console.log("onMouseOrTapExit" + this.name);
     }
+
+    //Called when mouse starts hovering over the object.
+    onMouseStartHover() {
+        //console.log("onMouseStartHover"+this.name);
+    }
+
+    //Called if mouse hover ends, regardless of whether they were holding down mouse.
+    onMouseEndHover() { 
+        //console.log("onMouseEndHover"+this.name);
+    }
+
+    /**END INPUT FUNCTIONS */
 
     isRequestingHoverhand() {
         return (this.hoverhand && this.interactable);
@@ -209,15 +229,7 @@ class SpriteObject {
     isRequestingPointerhand() {
         return this.pointerhand;
     }
-/*     onMouseHover() {
-        console.log("hovering");
-    } */
-    onMouseStartHover() {
-        //console.log("onMouseStartHover"+this.name);
-    }
-    onMouseEndHover() { //Called if mouse hover ends, regardless of whether they were holding down mouse
-        //console.log("onMouseEndHover"+this.name);
-    }
+    
 }
 
 class DraggableSprite extends SpriteObject { //rush copypaste of ball, but feel free to revive
