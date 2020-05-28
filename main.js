@@ -34,13 +34,7 @@ function run() {
       //ctx.fillText("oh myyy goood im so glad this works", 12, 40);
     }
     
-    //examplePoint.draw();
-    //line1.draw();
-    //line2.draw();
-    //triangle.draw();
-    //texasShape.draw();
-    //line3.draw();
-    
+
     framesDrawn++;
     //time = time - new Date();
     //console.log(framesDrawn/60);
