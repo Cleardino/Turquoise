@@ -7,7 +7,7 @@ class SpriteObject {
             this.img = [new Image()];
             this.img[0].src = imgURL;
         }
-        this.frameIndex = 0;
+        this.frameIndex = 0; //This index determines the index to use with both ClickShape, and Animation Frames, so they aught to match if you need a unique clickshape every frame. This is a bad way of doing things.
         this.width = width;
         this.height = height;
         this.velocity = new Velocity(0,0);
@@ -32,6 +32,8 @@ class SpriteObject {
         //this.usePolyForHitDetection = false;
         this.clickShapePoints = [];
         this.relativeClickshape;
+        this.requestsTopBilling = false;
+        this.beingGrabbed = false;
         //this.alreadyDevClicked = false;
         //this.clickShapeNums = clickShapeNums;
         //console.log(clickShapeNums).length;
@@ -177,19 +179,27 @@ class SpriteObject {
         if(runSettings.developerMode) {
             giveDevToolsObjectClicked(this);
         }
-        console.log("onClickOrTap" + this.name);
+        //console.log("onClickOrTap" + this.name);
     }
 
-    onMouseOrTapDown() {
-        console.log("OnMouseOrTapDown" + this.name);
+    onMouseOrTapDown(position = undefined) {
+        //console.log("OnMouseOrTapDown" + this.name);
+    }
+
+    onOwnedInputMove(position) {
+
+    }
+
+    onOwnedInputEnd() {
+
     }
 
     onClickOrTapExit(position = undefined) { //Called if actively held down cursor or actively held tap leaves the object
-        console.log("onClickOrTapExit" + this.name);
+        //console.log("onClickOrTapExit" + this.name);
     }
 
     onMouseOrTapExit() { //Called if any cursor or actively held tap leaves the object
-        console.log("onMouseOrTapExit" + this.name);
+        //console.log("onMouseOrTapExit" + this.name);
     }
 
     isRequestingHoverhand() {
@@ -203,10 +213,169 @@ class SpriteObject {
         console.log("hovering");
     } */
     onMouseStartHover() {
-        console.log("onMouseStartHover"+this.name);
+        //console.log("onMouseStartHover"+this.name);
     }
     onMouseEndHover() { //Called if mouse hover ends, regardless of whether they were holding down mouse
-        console.log("onMouseEndHover"+this.name);
+        //console.log("onMouseEndHover"+this.name);
+    }
+}
+
+/* class DraggableSprite extends SpriteObject { //rush copypaste of ball, but feel free to revive
+    constructor(name, position, width, height, imgURL, clickshape){
+        super(name, position, width, height, imgURL, clickshape);
+        this.whereGrabbed = new Position(0,0);
+        this.hoverhand = true;
+        //this.friction = 1;
+    }
+    onMouseOrTapDown(position) {
+        this.beingGrabbed = true;
+        this.requestsTopBilling = true;
+        let rx = position.x - this.position.x;
+        let ry = position.y - this.position.y;
+        this.whereGrabbed.set(rx, ry);
+        console.log(this.whereGrabbed);
+    }
+    onOwnedInputMove(position) {
+        this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
+    }
+    onOwnedInputEnd() {
+        this.beingGrabbed = false;
+        this.requestsTopBilling = false;
+        this.whereGrabbed.set(0,0);
+    }
+
+
+} */
+
+class TestBall extends SpriteObject {
+    constructor(position){
+        super("TestBall", position, 68, 67, "images/ball.png",[[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]]);
+        this.whereGrabbed = new Position(0,0);
+        this.hoverhand = true;
+    }
+    onMouseOrTapDown(position) {
+        this.beingGrabbed = true;
+        this.requestsTopBilling = true;
+        let rx = position.x - this.position.x;
+        let ry = position.y - this.position.y;
+        this.whereGrabbed.set(rx, ry);
+        console.log(this.whereGrabbed);
+    }
+    onOwnedInputMove(position) {
+        this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
+    }
+    onOwnedInputEnd() {
+        this.beingGrabbed = false;
+        this.requestsTopBilling = false;
+        this.whereGrabbed.set(0,0);
+    }
+
+
+}
+
+
+class TestBall2 extends TestBall {
+    constructor(position){
+        super(position);
+        this.lastFivePositionsDuringMove = [];
+        this.friction = 0.1;
+    }
+    update() {
+        super.update();
+        if(this.beingGrabbed) {
+            while(this.lastFivePositionsDuringMove.length >= 5) {
+                this.lastFivePositionsDuringMove.shift();
+            }
+            this.lastFivePositionsDuringMove.push(new Position(this.position.x, this.position.y));
+        }
+        //this.changeDirectionOnWallCollision();
+    }
+
+    onMouseOrTapDown(position) {
+        super.onMouseOrTapDown(position);
+        this.velocity.set(0,0);
+        this.lastFivePositionsDuringMove = [];
+    }
+
+    onOwnedInputMove(position) {
+        
+        super.onOwnedInputMove(position);
+        
+    }
+
+    updatePosition() {
+        this.position.add(this.velocity);
+        //console.log(this.velocity.x + "-=" + this.friction);
+        if((this.velocity.x > 0) && (this.velocity.x > this.friction)) {
+            this.velocity.x -= this.friction;
+            if(this.velocity.x <= (this.friction)) {
+                this.velocity.x = 0;
+            }
+            //console.log(this.velocity.x+"woa");
+        }
+        if((this.velocity.y > 0) && (this.velocity.y > this.friction)) {
+            this.velocity.y -= this.friction;
+            if(this.velocity.y <= (this.friction)) {
+                console.log("woa");
+                this.velocity.y = 0;
+            }
+            //console.log(this.velocity.x+"woa");
+        }
+
+        if((this.velocity.x < 0) && (this.velocity.x < -this.friction)) {
+            this.velocity.x += this.friction;
+            if(this.velocity.x >= (-this.friction)) {
+                this.velocity.x = 0;
+            }
+            //console.log(this.velocity.x+"woa");
+        }
+        if((this.velocity.y < 0) && (this.velocity.y < -this.friction)) {
+            this.velocity.y += this.friction;
+            if(this.velocity.y >= (-this.friction)) {
+                console.log("woa");
+                this.velocity.y = 0;
+            }
+            
+        }
+        
+
+    }
+
+    onOwnedInputEnd() {
+        super.onOwnedInputEnd();
+        let maximumThrowVelocity = 3;
+        if(this.lastFivePositionsDuringMove.length==5) {
+            let newvx = (this.lastFivePositionsDuringMove[this.lastFivePositionsDuringMove.length - 1].x - this.lastFivePositionsDuringMove[0].x)/4;
+            let newvy = (this.lastFivePositionsDuringMove[this.lastFivePositionsDuringMove.length - 1].y - this.lastFivePositionsDuringMove[0].y)/4;
+            if(newvx > maximumThrowVelocity) {
+                newvx = maximumThrowVelocity;
+            }
+            if(newvy > maximumThrowVelocity) {
+                newvy = maximumThrowVelocity;
+            }
+            if(newvx < -maximumThrowVelocity) {
+                newvx = -maximumThrowVelocity;
+            }
+            if(newvy < -maximumThrowVelocity) {
+                newvy = -maximumThrowVelocity;
+            }
+            this.velocity.x = newvx;
+            this.velocity.y = newvy;
+        }
+        
+        this.lastFivePositionsDuringMove = [];
+        console.log(this.velocity);
+        console.log("End Hold");
+    }
+
+
+    changeDirectionOnWallCollision() {
+        if (((this.position.x + this.width) > c.width) || (this.position.x < 0)) {
+            this.velocity.x = -this.velocity.x;
+        }
+        if (((this.position.y + this.height) > c.height) || (this.position.y < 0)) {
+            this.velocity.y = -this.velocity.y;
+        }
     }
 }
 
@@ -385,8 +554,8 @@ class DragSwitch extends TwoStateSpriteObject {
 
     onClickOrTap(){
         //do nothing
-        console.log("clicked");
-        //super.onClickOrTap();
+        //console.log("clicked");
+        super.onClickOrTap();
     }
     onClickOrTapExit(position = undefined) {
         super.onClickOrTapExit(position);
@@ -464,7 +633,7 @@ class BouncyImageSpawner {
 
 }
 
-/*This does something important that I'm not sure how to explain.... required for TwoStateSpriteObject*/
+/*This makes TwoStateSpriteObject's Super Clickshape Array that SpriteObject expects... A bit of a mess I know*/
 function makeTSClickShapeArray(defaultClickShape, transitionFramesURLs, stateBClickShape) {
     let tempClickShapeNums;
     if (defaultClickShape != null) {
