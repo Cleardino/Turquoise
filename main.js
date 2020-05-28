@@ -1,8 +1,10 @@
+//Setup Canvas
 var c = document.getElementById("TurquoiseCanvas");
-var ctx = c.getContext("2d"); //removing var shouldn't break it
-//var trueSize = true;
-var userIsUsingiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; //this code detecting if user is on iOS is from Stack Exchange, but I think it's ok since its basically one line
-//console.log(iOS);
+var ctx = c.getContext("2d");
+
+//var userIsUsingiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; //this code detecting if user is on iOS is from Stack Exchange, but I think it's ok since its basically one line
+
+//Game Settings
 var runSettings = {developerMode: true, trueSize: false, customCursors: true};
 
 //Global variables describing window size, canvas size, and how the canvas is being drawn in CSS
@@ -11,10 +13,7 @@ var windowSize = {height: window.innerHeight, width: window.innerWidth};
 var canvasPositionAndSizeInWindow; // Will contain left, top, width, height. Gets Updated at start, when the window is resized, and to fix problems on mobile every Click
 
 
-var dvdWidth = 128;
-var dvdHeight = 65;
-var bdWidth = 128;
-var bdHeight = 70;
+
 
 var framesDrawn = 0 ;
 var time = new Date();
@@ -37,7 +36,6 @@ function run() {
 
     framesDrawn++;
     //time = time - new Date();
-    //console.log(framesDrawn/60);
     
 }
 
@@ -56,26 +54,17 @@ function run() {
 //Initialise
 var gameState = new TurquoiseState();
 
-//let dvdSpawner = new BouncyImageSpawner(dvdWidth, dvdHeight, "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/DVD_logo.svg/320px-DVD_logo.svg.png", 10, "dvd");
-//let bdSpawner = new BouncyImageSpawner(bdWidth, bdHeight, "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Blu_ray_logo.png/320px-Blu_ray_logo.png", 10, "bd");
 addContent(gameState);
 
 let gameRender = new TurquoiseRender(c, ctx);
 let gameInput = new TurquoiseInput(c, gameState);
-//gameInput.initialise();
-//gameInput.initialise();
 
 
-//console.log(gameState.getGobjects());
 if (!runSettings.trueSize) {
     scaleToWindow();
 }
 updateGlobalCanvasPositionAndSizeCache();
 
-
-//disable right click
-
-//noContext = document.getElementById('noContextMenu');
 
 if(runSettings.customCursors) {
   c.style.cursor = 'none';
@@ -83,9 +72,3 @@ if(runSettings.customCursors) {
 
 //Someday I will make it wait for everything to load before running.
 run();
-
-
-
-
-
-
