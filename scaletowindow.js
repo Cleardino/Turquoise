@@ -19,7 +19,7 @@ function scaleToWindow() {
     let brr = (windowSize.width/2) - (canvasSize.width * thang/2);
     if (canvasDivided > windowDivided) {
         
-        c.style = "width: "+windowSize.width.toString()+"px;"+"top: "+grr.toString()+"px;"
+        c.style = "width: "+windowSize.width.toString()+"px;"+"top: "+grr.toString()+"px; background-color: white"
         //c.style = "width: "+grr.toString();+"px;"
 
 
@@ -32,7 +32,7 @@ function scaleToWindow() {
         //c.style = "margin-top: 100 px;"
         //c.style = "padding-top: 100px;"
     } else {
-        c.style = "height: "+windowSize.height+"px;" + "left: "+brr.toString()+"px;"
+        c.style = "height: "+windowSize.height+"px;" + "left: "+brr.toString()+"px; background-color: white"
         //c.style = "width: "+grr.toString();+"px;"
         /*c.style = "width: "+hmm.toString()+  "px;"*/
         //c.style = "width: 500px; border:1px solid #000000;"
