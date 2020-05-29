@@ -81,7 +81,7 @@ class TurquoiseInput {
             /* if(this.grabhand) {
                 this.usePressedCursor = true;
             } */
-            //updateGlobalCanvasPositionAndSizeCache(); //Can be done as a precaution to ensure that input can never be processed incorrectly. But it probably doesn't have to be done this often.
+            updateGlobalCanvasPositionAndSizeCache(); //Can be done as a precaution to ensure that input can never be processed incorrectly. But it probably doesn't have to be done this often.
             this.usePressedCursor = true;
             this.isMouseDown = true;
             this.executeClick = true;
@@ -154,7 +154,7 @@ class TurquoiseInput {
         //The way that it handles Touch Events heavily borrows from the example at https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
         c.addEventListener('touchstart', e => {
             e.preventDefault();
-            //updateGlobalCanvasPositionAndSizeCache(); //Can be done as a precaution to ensure that input can never be processed incorrectly. But it probably doesn't have to be done this often.
+            updateGlobalCanvasPositionAndSizeCache(); //Can be done as a precaution to ensure that input can never be processed incorrectly. But it probably doesn't have to be done this often.
             let touchStarts = e.changedTouches;
             //console.log(touchStarts);
             //console.log("touched");
