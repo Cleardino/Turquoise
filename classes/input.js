@@ -81,6 +81,7 @@ class TurquoiseInput {
             /* if(this.grabhand) {
                 this.usePressedCursor = true;
             } */
+            //updateGlobalCanvasPositionAndSizeCache(); //Can be done as a precaution to ensure that input can never be processed incorrectly. But it probably doesn't have to be done this often.
             this.usePressedCursor = true;
             this.isMouseDown = true;
             this.executeClick = true;
@@ -88,7 +89,7 @@ class TurquoiseInput {
             let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(clicked);
                 if(o){
                     if(o.beingGrabbed) {
-                        this.severObjectFromOtherTouch(o);
+                        this.severObjectFromOtherTouch(o); //This is to ensure that a user who tries to use Mouse and Touch in combination won't break the game.
                     }
                     o.onMouseOrTapDown(clicked);
                     this.currentlyClicking = o;
@@ -96,7 +97,7 @@ class TurquoiseInput {
                     
                 }
 
-            //I do this in multiple places to prevent it from mysteriously being overridden oops a bit messy
+            //Sometimes on Mac the OS cursor reappears for me after receiving a OS notification even though it's supposed to be invisible. So I try to make it rehide it every click with the below code but I think this doesn't help at all.
             if(runSettings.customCursors) {
                 c.style.cursor = 'none';
             }
@@ -153,7 +154,7 @@ class TurquoiseInput {
         //The way that it handles Touch Events heavily borrows from the example at https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
         c.addEventListener('touchstart', e => {
             e.preventDefault();
-            updateGlobalCanvasPositionAndSizeCache();
+            //updateGlobalCanvasPositionAndSizeCache(); //Can be done as a precaution to ensure that input can never be processed incorrectly. But it probably doesn't have to be done this often.
             let touchStarts = e.changedTouches;
             //console.log(touchStarts);
             //console.log("touched");
@@ -164,7 +165,7 @@ class TurquoiseInput {
                 let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(p);
                 if(o && o.beingGrabbed) {
                     this.severObjectFromOtherTouch(o);
-                    if(this.currentlyClicking === o) {
+                    if(this.currentlyClicking === o) { //This is to ensure that a user who tries to use Mouse and Touch in combination won't break the game.
                         this.currentlyClicking.onOwnedInputEnd();
                         this.currentlyClicking = false;
                     }

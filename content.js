@@ -37,7 +37,7 @@ function addContent(state) {
     let playButton = new PlayButton(new Position(185, 225));
     let testBall = new TestBall2(new Position(10, 10));
     let testBall2 = new TestBall2(new Position(20, 20));
-    let testBall3 = new TestBall2(new Position(40, 40));
+    let testBall3 = new TestBall3(new Position(40, 40));
     
     let titleScreen = new Scene("TitleScreen", [title, mouse, playButton, testBall, testBall2, testBall3/*, dragTexas*/], [texas]);
     //titleScreen.spawn();

@@ -13,7 +13,12 @@ class XY {
     }
     subtract(otherXY) {
         this.x = this.x-otherXY.x;
-        this.y = this.y-otherXY.y;
+        this.y = this.y-other
+        XY.y;
+    }
+    multiply(num) {
+        this.x *= num;
+        this.y *= num;
     }
 }
 

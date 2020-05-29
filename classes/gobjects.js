@@ -289,7 +289,8 @@ class TestBall2 extends TestBall {
     constructor(position){
         super(position);
         this.lastFivePositionsDuringMove = [];
-        this.friction = 0.1;
+        this.friction = 0.9;
+        this.gravity = 0.5;
     }
     update() {
         super.update();
@@ -299,6 +300,7 @@ class TestBall2 extends TestBall {
             }
             this.lastFivePositionsDuringMove.push(new Position(this.position.x, this.position.y));
         }
+        //this.stayAboveFloor();
         //this.changeDirectionOnWallCollision();
     }
 
@@ -309,56 +311,37 @@ class TestBall2 extends TestBall {
     }
 
     onOwnedInputMove(position) {
-        
         super.onOwnedInputMove(position);
+        //this.stayAboveFloor();
+        //this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
+        
         
     }
 
     updatePosition() {
-        let xstopped = false;
-        let ystopped = false;
-        if(this.velocity.x == 0) {
-            xstopped = true;
-        }
-        if(this.velocity.y == 0) {
-            ystopped = true;
-        }
+        
+        let minimumVelocity = 0.2;
 
         this.position.add(this.velocity);
-        //console.log(this.velocity.x + "-=" + this.friction);
-        if((this.velocity.x > 0) && (this.velocity.x > this.friction)) {
-            this.velocity.x -= this.friction;
-            if(this.velocity.x <= (this.friction)) {
-                this.velocity.x = 0;
-            }
-            //console.log(this.velocity.x+"woa");
-        }
-        if((this.velocity.y > 0) && (this.velocity.y > this.friction)) {
-            this.velocity.y -= this.friction;
-            if(this.velocity.y <= (this.friction)) {
-                this.velocity.y = 0;
-            }
-            //console.log(this.velocity.x+"woa");
-        }
+        
+        this.velocity.multiply(this.friction);
 
-        if((this.velocity.x < 0) && (this.velocity.x < -this.friction)) {
-            this.velocity.x += this.friction;
-            if(this.velocity.x >= (-this.friction)) {
-                this.velocity.x = 0;
-            }
-            //console.log(this.velocity.x+"woa");
+         //If velocity is too low, stop. Prevents the effect of an unnatural looking final pixel move, but perhaps this should be tweaked.
+        /* if((0 < this.velocity.x) &&(this.velocity.x < minimumVelocity)) {
+            this.velocity.stop();
+            console.log("stopped");
         }
-        if((this.velocity.y < 0) && (this.velocity.y < -this.friction)) {
-            this.velocity.y += this.friction;
-            if(this.velocity.y >= (-this.friction)) {
-                //console.log("woa");
-                this.velocity.y = 0;
-            }
-            
-        }
+        if((0 > this.velocity.x) && (this.velocity.x > -minimumVelocity)) {
+            this.velocity.stop();
+            console.log("stopped");
+        } */
+
+        
         
 
     }
+
+
 
     onOwnedInputEnd() {
         super.onOwnedInputEnd();
@@ -388,17 +371,60 @@ class TestBall2 extends TestBall {
     }
 
 
-    changeDirectionOnWallCollision() {
+    /* changeDirectionOnWallCollision() {
         if (((this.position.x + this.width) > c.width) || (this.position.x < 0)) {
             this.velocity.x = -this.velocity.x;
         }
         if (((this.position.y + this.height) > c.height) || (this.position.y < 0)) {
             this.velocity.y = -this.velocity.y;
         }
+    } */
+}
+
+class TestBall3 extends TestBall2 {
+    constructor(position) {
+        super(position);
+    }
+
+    update() {
+        super.update();
+        this.stayAboveFloor();
+    }
+
+    updatePosition() {
+
+        this.position.add(this.velocity);
+        
+        this.velocity.multiply(this.friction);
+        if(!this.beingGrabbed) {
+            this.velocity.y += this.gravity;
+        }
+    }
+
+
+    
+    stayAboveFloor() {
+        let floorHeight = 0;
+        if ((this.position.y +this.height) > canvasSize.height - floorHeight) {
+            console.log("floor!");
+            this.position.y = (canvasSize.height - floorHeight - this.height);
+            //this.velocity.y = -this.velocity.y;
+        }
+        
+        let searchPos = new Position(this.position.x + (this.width/2), this.position.y + this.height + 5);
+        //console.log(searchPos);
+        let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(searchPos);
+        if(o && o.getName =="TestBall"){
+            console.log("OMG");
+            console.log(o);
+            //this.position.y = (canvasSize.height - floorHeight - this.height);
+        }
+        
+
     }
 }
 
-class PlayButton extends SpriteObject { //Start by making a specific one, then make something generic. Imagine even if a class could accept button text
+class PlayButton extends SpriteObject { //Start by making a specific one, then make something generic. Imagine even if a class could accept button text, and function to be called on click
     constructor(position) {
         super("playButton", position, 72, 20, "images/Play.png");
         this.clickRectanglePadding = 20;

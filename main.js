@@ -2,7 +2,7 @@
 var c = document.getElementById("TurquoiseCanvas");
 var ctx = c.getContext("2d");
 
-//var userIsUsingiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; //this code detecting if user is on iOS is from Stack Exchange, but I think it's ok since its basically one line
+var userIsUsingiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; //this code detecting if user is on iOS is from Stack Exchange, but I think it's ok since its basically one line
 
 //Game Settings
 var runSettings = {developerMode: true, trueSize: false, customCursors: true};
@@ -62,6 +62,8 @@ let gameInput = new TurquoiseInput(c, gameState);
 
 if (!runSettings.trueSize) {
     scaleToWindow();
+} else{
+  c.style = "background-color: white"
 }
 updateGlobalCanvasPositionAndSizeCache();
 
