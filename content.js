@@ -35,11 +35,11 @@ function addContent(state) {
     
     let title = new SpriteObject("title", new Position(128, 254), 378, 81, "images/Fromagerie.png");
     let playButton = new PlayButton(new Position(185, 225));
-    let testBall = new TestBall2(new Position(10, 10));
-    let testBall2 = new TestBall2(new Position(20, 20));
-    let testBall3 = new TestBall3(new Position(40, 40));
+    let testBall = new DraggableSprite("TestBall", new Position(10, 10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]]);
+    let testBall2 = new ThrowableSprite("TestBall2", new Position(20, 20), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]]);
+    let testBall3 = new GravitySprite("TestBall2", new Position(20, 20), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]]);
     
-    let titleScreen = new Scene("TitleScreen", [title, mouse, playButton, testBall, testBall2, testBall3/*, dragTexas*/], [texas]);
+    let titleScreen = new Scene("TitleScreen", [title, mouse, playButton, testBall, testBall2, testBall3/*dragTexas*/], [texas]);
     //titleScreen.spawn();
     let bouncyScene = new Scene("BouncyScene", [testswitch /*,testswitch2,mouse*/], [ /*dvdSpawner, bdSpawner, marioSpawner,texas*/]);
     bouncyScene.spawn();

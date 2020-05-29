@@ -232,35 +232,11 @@ class SpriteObject {
     
 }
 
-class DraggableSprite extends SpriteObject { //rush copypaste of ball, but feel free to revive
-    constructor(name, position, width, height, imgURL, clickshape){
-        super(name, position, width, height, imgURL, clickshape);
-        this.whereGrabbed = new Position(0,0);
-        this.hoverhand = true;
-    }
-    onMouseOrTapDown(position) {
-        this.beingGrabbed = true;
-        this.requestsTopBilling = true;
-        let rx = position.x - this.position.x;
-        let ry = position.y - this.position.y;
-        this.whereGrabbed.set(rx, ry);
-        console.log(this.whereGrabbed);
-    }
-    onOwnedInputMove(position) {
-        this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
-    }
-    onOwnedInputEnd() {
-        this.beingGrabbed = false;
-        this.requestsTopBilling = false;
-        this.whereGrabbed.set(0,0);
-    }
 
 
-}
-
-class TestBall extends SpriteObject {
-    constructor(position){
-        super("TestBall", position, 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]]);
+class DraggableSprite extends SpriteObject {
+    constructor(name, position, width, height, imgURL, clickShapeNums){
+        super(name, position, width, height, imgURL, clickShapeNums);
         this.whereGrabbed = new Position(0,0);
         this.hoverhand = true;
     }
@@ -285,9 +261,9 @@ class TestBall extends SpriteObject {
 }
 
 
-class TestBall2 extends TestBall {
-    constructor(position){
-        super(position);
+class ThrowableSprite extends DraggableSprite {
+    constructor(name, position, width, height, imgURL, clickShapeNums){
+        super(name, position, width, height, imgURL, clickShapeNums);
         this.lastFivePositionsDuringMove = [];
         this.friction = 0.9;
         this.gravity = 0.5;
@@ -381,9 +357,9 @@ class TestBall2 extends TestBall {
     } */
 }
 
-class TestBall3 extends TestBall2 {
-    constructor(position) {
-        super(position);
+class GravitySprite extends ThrowableSprite {
+    constructor(name, position, width, height, imgURL, clickShapeNums) {
+        super(name, position, width, height, imgURL, clickShapeNums);
     }
 
     update() {
