@@ -35,6 +35,8 @@ class SpriteObject {
         this.hoverhand = false;
         this.pointerhand;
         this.pointerhand = false;
+        this.ownerRequestsClosedHand;
+        this.ownerRequestsClosedHand = false;
 
         this.clickRectanglePadding = 0;
         
@@ -235,10 +237,16 @@ class SpriteObject {
 
 
 class DraggableSprite extends SpriteObject {
-    constructor(name, position, width, height, imgURL, clickShapeNums){
+    constructor(name, position, width, height, imgURL, clickShapeNums = false, keepWithin = false){
         super(name, position, width, height, imgURL, clickShapeNums);
+        if(keepWithin) {
+            this.keepWithin = [keepWithin[0], new Position(keepWithin[1].x-width, keepWithin[1].y-height)];
+        } else {
+            this.keepWithin = false;
+        }
         this.whereGrabbed = new Position(0,0);
         this.hoverhand = true;
+        this.ownerRequestsClosedHand = true;
     }
     onMouseOrTapDown(position) {
         this.beingGrabbed = true;
@@ -249,9 +257,34 @@ class DraggableSprite extends SpriteObject {
         console.log(this.whereGrabbed);
     }
     onOwnedInputMove(position) {
-        this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
+        if(this.keepWithin) {
+            if((((position.x-this.whereGrabbed.x) > this.keepWithin[0].x) && ((position.y-this.whereGrabbed.y) > this.keepWithin[0].y)) && ((position.x-this.whereGrabbed.x) < this.keepWithin[1].x) && (position.y-this.whereGrabbed.y < this.keepWithin[1].y)) {
+                //console.log("it's within");
+                this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
+            } else {
+                let newx = position.x-this.whereGrabbed.x;
+                let newy = position.y-this.whereGrabbed.y;
+                if(position.x-this.whereGrabbed.x < this.keepWithin[0].x) {
+                    newx = this.keepWithin[0].x;
+                }
+                if(position.y-this.whereGrabbed.y < this.keepWithin[0].y) {
+                    newy = this.keepWithin[0].y;
+                }
+                if(position.x-this.whereGrabbed.x > this.keepWithin[1].x) {
+                    newx = this.keepWithin[1].x;
+                }
+                if(position.y-this.whereGrabbed.y > this.keepWithin[1].y) {
+                    newy= this.keepWithin[1].y;
+                }
+                this.position.set(newx, newy);
+            }
+        } else {
+            this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
+        }
+        
     }
     onOwnedInputEnd() {
+        console.log("owned input ended");
         this.beingGrabbed = false;
         this.requestsTopBilling = false;
         this.whereGrabbed.set(0,0);
@@ -262,11 +295,12 @@ class DraggableSprite extends SpriteObject {
 
 
 class ThrowableSprite extends DraggableSprite {
-    constructor(name, position, width, height, imgURL, clickShapeNums){
-        super(name, position, width, height, imgURL, clickShapeNums);
+    constructor(name, position, width, height, imgURL, clickShapeNums, keepWithin, friction = 0.9, velocityLossOnWallBounce = 1/*0.5 works well*/){
+        super(name, position, width, height, imgURL, clickShapeNums, keepWithin);
         this.lastFivePositionsDuringMove = [];
-        this.friction = 0.9;
-        this.gravity = 0.5;
+        this.friction = friction;
+        this.velocityLossOnWallBounce = velocityLossOnWallBounce;
+        
     }
     update() {
         super.update();
@@ -295,6 +329,7 @@ class ThrowableSprite extends DraggableSprite {
     }
 
     updatePosition() {
+        this.changeDirectionOnWallCollision();
         
         let minimumVelocity = 0.2;
 
@@ -323,8 +358,8 @@ class ThrowableSprite extends DraggableSprite {
         super.onOwnedInputEnd();
         let maximumThrowVelocity = 50;//was 10
         if(this.lastFivePositionsDuringMove.length==5) {
-            let newvx = ((this.lastFivePositionsDuringMove[this.lastFivePositionsDuringMove.length - 1].x - this.lastFivePositionsDuringMove[0].x)/5); //got rid of /4
-            let newvy = ((this.lastFivePositionsDuringMove[this.lastFivePositionsDuringMove.length - 1].y - this.lastFivePositionsDuringMove[0].y)/5); //got rid of /4
+            let newvx = ((this.lastFivePositionsDuringMove[this.lastFivePositionsDuringMove.length - 1].x - this.lastFivePositionsDuringMove[0].x)/5);
+            let newvy = ((this.lastFivePositionsDuringMove[this.lastFivePositionsDuringMove.length - 1].y - this.lastFivePositionsDuringMove[0].y)/5);
             if(newvx > maximumThrowVelocity) {
                 newvx = maximumThrowVelocity;
             }
@@ -347,19 +382,36 @@ class ThrowableSprite extends DraggableSprite {
     }
 
 
-    /* changeDirectionOnWallCollision() {
-        if (((this.position.x + this.width) > c.width) || (this.position.x < 0)) {
-            this.velocity.x = -this.velocity.x;
+    changeDirectionOnWallCollision() {
+        if (this.position.x < this.keepWithin[0].x) {
+            if(this.velocity.x < 0){
+                this.velocity.x = (-this.velocity.x * this.velocityLossOnWallBounce);
+            }
+        } 
+        if(this.position.x > this.keepWithin[1].x){
+            if(this.velocity.x > 0){
+                this.velocity.x = (-this.velocity.x * this.velocityLossOnWallBounce);
+            }
+        } 
+        if (this.position.y < this.keepWithin[0].y) {
+            if(this.velocity.y < 0) {
+                this.velocity.y = (-this.velocity.y * this.velocityLossOnWallBounce);
+            }
+        } 
+        if (this.position.y > this.keepWithin[1].y) {
+            if(this.velocity.y > 0) {
+                this.velocity.y = (-this.velocity.y * this.velocityLossOnWallBounce);
+            }
         }
-        if (((this.position.y + this.height) > c.height) || (this.position.y < 0)) {
-            this.velocity.y = -this.velocity.y;
-        }
-    } */
+    }
 }
 
 class GravitySprite extends ThrowableSprite {
     constructor(name, position, width, height, imgURL, clickShapeNums) {
         super(name, position, width, height, imgURL, clickShapeNums);
+        this.gravity = 0.5;
+        this.friction = 1;
+        this.floorFriction = 0.9;
     }
 
     update() {
@@ -384,23 +436,28 @@ class GravitySprite extends ThrowableSprite {
         if ((this.position.y +this.height) > canvasSize.height - floorHeight) {
             console.log("floor!");
             this.position.y = (canvasSize.height - floorHeight - this.height);
+            this.velocity.x *= this.floorFriction;
             //this.velocity.y = -this.velocity.y;
         }
         
-        let searchPos = new Position(this.position.x + (this.width/2), this.position.y + this.height + 5);
+        /* let searchPos = new Position(this.position.x + (this.width/2), this.position.y + this.height + 5);
         //console.log(searchPos);
         let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(searchPos);
         if(o && o.getName =="TestBall"){
             console.log("OMG");
             console.log(o);
             //this.position.y = (canvasSize.height - floorHeight - this.height);
-        }
+        } */
         
 
     }
 }
 
-class PlayButton extends SpriteObject { //Start by making a specific one, then make something generic. Imagine even if a class could accept button text, and function to be called on click
+class StackableSprite extends GravitySprite {
+
+}
+
+class PlayButton extends SpriteObject { //Starting by making a specific one, then will make something generic. Imagine even if a class could accept button text, and function to be called on click
     constructor(position) {
         super("playButton", position, 72, 20, "images/Play.png");
         this.clickRectanglePadding = 20;

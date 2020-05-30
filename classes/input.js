@@ -86,6 +86,7 @@ class TurquoiseInput {
             this.isMouseDown = true;
             this.executeClick = true;
             let clicked = getPositionFromEvent(e);
+            console.log(clicked);
             let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(clicked);
                 if(o){
                     if(o.beingGrabbed) {
@@ -324,7 +325,7 @@ class TurquoiseInput {
                             this.usePressedCursor = false;
                             this.isMouseDown = false; // recent addition
                         }
-                        this.currentlyClicking = undefined;
+                        //this.currentlyClicking = undefined;
                     }
                 }
                 if (o.isRequestingHoverhand()) {
@@ -349,6 +350,12 @@ class TurquoiseInput {
                 this.objectLastHovering = undefined;
                 this.grabhand = false;
             }
+
+            if(this.currentlyClicking && this.currentlyClicking.ownerRequestsClosedHand) {
+                this.grabhand = true;
+                this.usePressedCursor = true;
+            }
+
             /* for (var i = 0; i < gameState.getGobjects().length; i++) {
                 //console.log(gameState.getGobjects()[i]);
                 //console.log(hoverX + ", " + hoverY);
