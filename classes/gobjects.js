@@ -237,8 +237,12 @@ class SpriteObject {
 
 
 class DraggableSprite extends SpriteObject {
-    constructor(name, position, width, height, imgURL, clickShapeNums = false, keepWithin = false){
+    constructor(name, position, width, height, imgURL, altImg = false, clickShapeNums = false, keepWithin = false){
         super(name, position, width, height, imgURL, clickShapeNums);
+        if(altImg) {
+            this.img.push(new Image());
+            this.img[1].src = altImg;
+        }
         if(keepWithin) {
             this.keepWithin = [keepWithin[0], new Position(keepWithin[1].x-width, keepWithin[1].y-height)];
         } else {
@@ -251,6 +255,9 @@ class DraggableSprite extends SpriteObject {
     onMouseOrTapDown(position) {
         this.beingGrabbed = true;
         this.requestsTopBilling = true;
+        if(this.img[1]) {
+            this.frameIndex = 1;
+        }
         let rx = position.x - this.position.x;
         let ry = position.y - this.position.y;
         this.whereGrabbed.set(rx, ry);
@@ -288,6 +295,9 @@ class DraggableSprite extends SpriteObject {
         this.beingGrabbed = false;
         this.requestsTopBilling = false;
         this.whereGrabbed.set(0,0);
+        if(this.img[1]) {
+            this.frameIndex = 0;
+        }
     }
 
 
@@ -296,7 +306,7 @@ class DraggableSprite extends SpriteObject {
 
 class ThrowableSprite extends DraggableSprite {
     constructor(name, position, width, height, imgURL, clickShapeNums, keepWithin, friction = 0.9, velocityLossOnWallBounce = 1/*0.5 works well*/){
-        super(name, position, width, height, imgURL, clickShapeNums, keepWithin);
+        super(name, position, width, height, imgURL, false, clickShapeNums, keepWithin);
         this.lastFivePositionsDuringMove = [];
         this.friction = friction;
         this.velocityLossOnWallBounce = velocityLossOnWallBounce;
@@ -432,7 +442,7 @@ class GravitySprite extends ThrowableSprite {
 
     
     stayAboveFloor() {
-        let floorHeight = 0;
+        let floorHeight = 25;
         if ((this.position.y +this.height) > canvasSize.height - floorHeight) {
             console.log("floor!");
             this.position.y = (canvasSize.height - floorHeight - this.height);
