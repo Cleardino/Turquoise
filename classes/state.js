@@ -20,6 +20,14 @@ class TurquoiseState {
         //}
     }
 
+    getCurrentBG() {
+        if (this.scenes[this.currentSceneIndex].bg) {
+            return this.scenes[this.currentSceneIndex].bg;
+        } else {
+            return false;
+        }
+    }
+
     getSceneByName(name) {
         var i;
         for (i = 0; i < this.scenes.length; i++) {
@@ -110,10 +118,18 @@ class TurquoiseState {
 }
 
 class Scene {
-    constructor(name, gobjects = [], spawners = []){
+    constructor(name, gobjects = [], spawners = [], bgImgUrl = false){
         this.name = name;
         this.gobjects = gobjects;
         this.spawners = spawners;
+        this.bg;
+        if(bgImgUrl) {
+            this.bg = new Image();
+            this.bg.src = bgImgUrl;
+        } else {
+            this.bg = false;
+        }
+    
     }
     spawn() {
         while (this.spawners.length > 0) { //this while loop is disconcerting. Easy fix could stop this from potentially looping forever. For loop through then remove them at the end?
