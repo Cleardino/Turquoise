@@ -36,7 +36,7 @@ function addContent(state) {
     let title = new SpriteObject("title", new Position(128, 254), 378, 81, "images/Fromagerie.png");
     let playButton = new PlayButton(new Position(185, 225));
     let testTexas = new DraggableSprite("texas", new Position(200, 200), 150, 146, "images/texas2.png", "images/texas2bigger.png", [[42, 62], [44, 7], [76, 8], [75, 28], [138, 38], [144, 71], [141, 92], [108, 114], [107, 138], [102, 140], [85, 132], [76, 116], [59, 92], [47, 91], [44, 101], [33, 98], [27, 92], [24, 81], [4, 62]], [new Position(0,0), new Position(canvasSize.width, canvasSize.height)]);
-    let paper = new ThrowableSprite("paper", new Position(150, 150), 122, 154, "images/paper.png", false, [new Position(0,0), new Position(canvasSize.width, canvasSize.height)], 0.8, 0.5);
+    let paper = new ThrowableSprite("paper", new Position(150, 150), 122, 154, "images/paper.png", false, [new Position(0,0), new Position(canvasSize.width, canvasSize.height)], 0.9, 0.5);
     let block = new GravitySprite("TestBall2", new Position(20, 20), 68, 67, "images/block.png", false);
     
     let titleScreen = new Scene("TitleScreen", [title, mouse, playButton, testTexas, paper/*dragTexas*/], [texas]);
