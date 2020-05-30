@@ -10,7 +10,7 @@ class TurquoiseRender {
 
         let bg = gameState.getCurrentBG();
         if (bg) {
-            console.log("drew bg");
+            //console.log("drew bg");
             this.ctx.drawImage(bg, 0, 0, 640, 360);
         }
 
