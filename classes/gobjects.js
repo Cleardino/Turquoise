@@ -339,7 +339,10 @@ class ThrowableSprite extends DraggableSprite {
     }
 
     updatePosition() {
-        this.changeDirectionOnWallCollision();
+        if(this.keepWithin) {
+            this.changeDirectionOnWallCollision();
+        }
+        
         
         let minimumVelocity = 0.2;
 
@@ -417,16 +420,21 @@ class ThrowableSprite extends DraggableSprite {
 }
 
 class GravitySprite extends ThrowableSprite {
-    constructor(name, position, width, height, imgURL, clickShapeNums) {
-        super(name, position, width, height, imgURL, clickShapeNums);
+    constructor(name, position, width, height, imgURL, clickShapeNums, keepWithin = false) {
+        super(name, position, width, height, imgURL, clickShapeNums, keepWithin);
         this.gravity = 0.5;
         this.friction = 1;
         this.floorFriction = 0.9;
+        this.velocityLossOnWallBounce = 0.7;
     }
 
     update() {
         super.update();
-        this.stayAboveFloor();
+        this.checkFloor();
+        if(this.keepWithin) {
+            this.changeDirectionOnWallCollision();
+        }
+        
     }
 
     updatePosition() {
@@ -441,7 +449,7 @@ class GravitySprite extends ThrowableSprite {
 
 
     
-    stayAboveFloor() {
+    checkFloor() {
         let floorHeight = 25;
         if ((this.position.y +this.height) > canvasSize.height - floorHeight) {
             console.log("floor!");
@@ -465,6 +473,56 @@ class GravitySprite extends ThrowableSprite {
 
 class StackableSprite extends GravitySprite {
 
+}
+
+class BouncyBall extends GravitySprite {
+    constructor(name, position, width, height, imgURL, clickShapeNums, keepWithin = false) {
+        super(name, position, width, height, imgURL, clickShapeNums, keepWithin);
+    }
+    checkFloor() {
+        let floorHeight = 25;
+        if ((this.position.y +this.height) > canvasSize.height - floorHeight) {
+            this.position.y--;
+            this.velocity.y = (-this.velocity.y*0.7);
+            console.log(this.velocity.y);
+            if(this.position.y > canvasSize.height-floorHeight-this.height) {
+                this.position.y = canvasSize.height-floorHeight-this.height;
+            }
+            if(this.velocity.y > -3 && this.velocity.y < 0) {
+                console.log("stopped");
+                this.velocity.y = 0;
+                this.position.y = (canvasSize.height - floorHeight - this.height);
+                this.velocity.x *= this.floorFriction;
+            }
+            /* console.log("floor!");
+            
+            this.velocity.x *= this.floorFriction; */
+            //this.velocity.y = -this.velocity.y;
+        }
+    }
+
+    changeDirectionOnWallCollision() {
+        if (this.position.x < this.keepWithin[0].x) {
+            if(this.velocity.x < 0){
+                this.velocity.x = (-this.velocity.x * this.velocityLossOnWallBounce);
+            }
+        } 
+        if(this.position.x > this.keepWithin[1].x){
+            if(this.velocity.x > 0){
+                this.velocity.x = (-this.velocity.x * this.velocityLossOnWallBounce);
+            }
+        } 
+        if (this.position.y < this.keepWithin[0].y) {
+            if(this.velocity.y < 0) {
+                this.velocity.y = (-this.velocity.y * this.velocityLossOnWallBounce);
+            }
+        } 
+        /* if (this.position.y > this.keepWithin[1].y) {
+            if(this.velocity.y > 0) {
+                this.velocity.y = (-this.velocity.y * this.velocityLossOnWallBounce);
+            }
+        } */
+    }
 }
 
 class PlayButton extends SpriteObject { //Starting by making a specific one, then will make something generic. Imagine even if a class could accept button text, and function to be called on click
