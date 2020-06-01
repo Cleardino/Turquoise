@@ -43,8 +43,17 @@ function addContent(state) {
     let titleScreen = new Scene("TitleScreen", [title, mouse, playButton, testTexas, paper/*dragTexas*/], [texas]);
     //titleScreen.spawn();
     let bouncyScene = new Scene("BouncyScene", [testswitch, block, ball], [ /*dvdSpawner, bdSpawner, marioSpawner,texas*/], "images/bg.png");
+
+    let wall1 = new SpriteObject("wall1", new Position(417,165), 50, 15, "images/black.png", false, 1);
+    let wall2 = new SpriteObject("wall2", new Position(367,165), 50, 15, "images/black.png", false, 1);
+    let wall3 = new SpriteObject("wall3", new Position(317,165), 50, 15, "images/black.png", false, 1);
+    let wall4 = new SpriteObject("wall4", new Position(267,165), 50, 15, "images/black.png", false, 1);
+    let dragMe = new DraggableSprite("dragMe", new Position(0,0), 20, 20, "images/black.png", false, false, [new Position(0,0), new Position(canvasSize.width, canvasSize.height)], 1);
+
+    let collisionScene = new Scene("CollisionScene", [dragMe, wall1, wall2, wall3, wall4]);
     bouncyScene.spawn();
-    state.addScene(titleScreen);
-    state.addScene(bouncyScene);
+    state.addScenes([titleScreen, bouncyScene, collisionScene]);
+    //state.addScene(bouncyScene);
+    //state.addScene(collisionScene);
     console.log(gameState);
   }

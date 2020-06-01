@@ -42,10 +42,12 @@ function updateGlobalCanvasPositionAndSizeCache() {
 }
 
 function areGobjectsCollidingAsRects(obj1, obj2) {
-    if(obj1.x < obj2.x + obj2.width && 
-        obj1.x + obx.width > obj2.x &&
-        obj1.y < obj2.y + obj2.height &&
-        obj1.y + obj1.height > obj2.y) {
+    console.log(obj1);
+    //This is about the simplest thing in the world, but I still did end up borrowing from https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection oop
+    if((obj1.position.x < obj2.position.x + obj2.width) && 
+        (obj1.position.x + obj1.width > obj2.position.x) &&
+        (obj1.position.y < obj2.position.y + obj2.height) &&
+        (obj1.position.y + obj1.height > obj2.position.y)) {
             return true;
         } else {
             return false;

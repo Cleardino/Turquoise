@@ -86,7 +86,7 @@ class TurquoiseInput {
             this.isMouseDown = true;
             this.executeClick = true;
             let clicked = getPositionFromEvent(e);
-            console.log(clicked);
+            //console.log(clicked);
             let o = gameState.getTopObjectAtPositionIfInteractableElseFalse(clicked);
                 if(o){
                     if(o.beingGrabbed) {
