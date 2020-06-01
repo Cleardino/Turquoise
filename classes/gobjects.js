@@ -266,32 +266,37 @@ class DraggableSprite extends SpriteObject {
         //console.log(this.whereGrabbed);
     }
     onOwnedInputMove(position) {
-        if(this.keepWithin) {
-            if((((position.x-this.whereGrabbed.x) > this.keepWithin[0].x) && ((position.y-this.whereGrabbed.y) > this.keepWithin[0].y)) && ((position.x-this.whereGrabbed.x) < this.keepWithin[1].x) && (position.y-this.whereGrabbed.y < this.keepWithin[1].y)) {
-                this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
+            let newx = position.x-this.whereGrabbed.x;
+            let newy = position.y-this.whereGrabbed.y;
+            if(this.keepWithin) {
+                if((((newx) > this.keepWithin[0].x) && ((newy) > this.keepWithin[0].y)) && ((newx) < this.keepWithin[1].x) && (newy < this.keepWithin[1].y)) {
+                    //this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
+                } else {
+                    if(position.x-this.whereGrabbed.x < this.keepWithin[0].x) {
+                        newx = this.keepWithin[0].x;
+                    }
+                    if(position.y-this.whereGrabbed.y < this.keepWithin[0].y) {
+                        newy = this.keepWithin[0].y;
+                    }
+                    if(position.x-this.whereGrabbed.x > this.keepWithin[1].x) {
+                        newx = this.keepWithin[1].x;
+                    }
+                    if(position.y-this.whereGrabbed.y > this.keepWithin[1].y) {
+                        newy= this.keepWithin[1].y;
+                    }
+                    //this.position.set(newx, newy);
+                }
             } else {
-                let newx = position.x-this.whereGrabbed.x;
-                let newy = position.y-this.whereGrabbed.y;
-                if(position.x-this.whereGrabbed.x < this.keepWithin[0].x) {
-                    newx = this.keepWithin[0].x;
-                }
-                if(position.y-this.whereGrabbed.y < this.keepWithin[0].y) {
-                    newy = this.keepWithin[0].y;
-                }
-                if(position.x-this.whereGrabbed.x > this.keepWithin[1].x) {
-                    newx = this.keepWithin[1].x;
-                }
-                if(position.y-this.whereGrabbed.y > this.keepWithin[1].y) {
-                    newy= this.keepWithin[1].y;
-                }
-                this.position.set(newx, newy);
+                newx = position.x - this.whereGrabbed.x;
+                newy = position.y - this.whereGrabbed.y;
+                //this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
             }
-        } else {
-            this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
-        }
-
         
+        if(!this.collidesAtPosition(new Position(newx, newy))) {
+            this.position.set(newx, newy);
+        }     
     }
+    
     onOwnedInputEnd() {
         //console.log("owned input ended");
         this.beingGrabbed = false;
