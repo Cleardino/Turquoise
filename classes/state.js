@@ -9,6 +9,11 @@ class TurquoiseState {
     addScene(scene) {
         this.scenes.push(scene);
     }
+    addScenes(array) {
+        for(let i = 0; i < array.length; i++) {
+            this.scenes.push(array[i]);
+        }
+    }
     getSceneByArrayPosition(i){
         //console.log("test");
         return this.scenes[i];
@@ -60,6 +65,10 @@ class TurquoiseState {
         this.currentSceneIndex++;
     }
 
+    getCollidableGobjectsAtLayer(layer) {
+        return this.scenes[this.currentSceneIndex].getCollidableGobjectsAtLayer(layer);
+    }
+
 /*    goToPreviousScene() {
 
     } */ //not necesary?
@@ -77,13 +86,16 @@ class TurquoiseState {
             this.getGobjects()[i].update();
             //console.log(gameState.getGobjects());
             if(this.getGobjects()[i].requestsTopBilling && (i < (this.getGobjects().length - this.getNumberOfTopBillers()))) {
+                //console.log('we sliced');
                 let sliced = this.getGobjects().splice(i, 1);
                 console.log(this.getGobjects());
                 this.getGobjects().push(sliced[0]);
                 i--;
+                continue;
             }
             if (this.getGobjects()[i].isRequestingDestroy()) {
                 this.getCurrentScene().destroyGobject(i);
+                //console.log("we destroyed");
                 //console.log(gameState.getGobjects());
                 i--; // hoping this prevents skipping an object's update, but untested. going through the array backwards supposedly prevents this also
                 
@@ -149,5 +161,17 @@ class Scene {
     }
     getGobjects() {
         return this.gobjects;
+    }
+    getCollidableGobjectsAtLayer(layer) {
+        let array = [];
+        if(layer == 0) {
+            return array;
+        }
+        for(let i = 0; i < this.gobjects.length; i++) {
+            if(this.gobjects[i].collisionLayer == layer) {
+                array.push(this.gobjects[i]);
+            }
+        }
+        return array;
     }
 }

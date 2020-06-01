@@ -1,6 +1,6 @@
 /*Default Game Object*/
 class SpriteObject {
-    constructor(name, position, width, height, imgURL, clickShapeNums) {
+    constructor(name, position, width, height, imgURL, clickShapeNums, collisionLayer = 0) {
         this.updateEveryFrame = true;
         this.name = name;
         this.position = position;
@@ -29,6 +29,7 @@ class SpriteObject {
         this.interactable;
         this.interactable = true;
         this.fadeSpeed;
+        this.collisionLayer = collisionLayer; //if zero, no collisions
 
         //Bools to request different cursors
         this.hoverhand;
@@ -237,7 +238,7 @@ class SpriteObject {
 
 
 class DraggableSprite extends SpriteObject {
-    constructor(name, position, width, height, imgURL, altImg = false, clickShapeNums = false, keepWithin = false){
+    constructor(name, position, width, height, imgURL, altImg = false, clickShapeNums = false, keepWithin = false, collidesWithLayer = 0){
         super(name, position, width, height, imgURL, clickShapeNums);
         if(altImg) {
             this.img.push(new Image());
@@ -251,6 +252,7 @@ class DraggableSprite extends SpriteObject {
         this.whereGrabbed = new Position(0,0);
         this.hoverhand = true;
         this.ownerRequestsClosedHand = true;
+        this.collidesWithLayer = collidesWithLayer;
     }
     onMouseOrTapDown(position) {
         this.beingGrabbed = true;
@@ -261,12 +263,11 @@ class DraggableSprite extends SpriteObject {
         let rx = position.x - this.position.x;
         let ry = position.y - this.position.y;
         this.whereGrabbed.set(rx, ry);
-        console.log(this.whereGrabbed);
+        //console.log(this.whereGrabbed);
     }
     onOwnedInputMove(position) {
         if(this.keepWithin) {
             if((((position.x-this.whereGrabbed.x) > this.keepWithin[0].x) && ((position.y-this.whereGrabbed.y) > this.keepWithin[0].y)) && ((position.x-this.whereGrabbed.x) < this.keepWithin[1].x) && (position.y-this.whereGrabbed.y < this.keepWithin[1].y)) {
-                //console.log("it's within");
                 this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
             } else {
                 let newx = position.x-this.whereGrabbed.x;
@@ -288,16 +289,41 @@ class DraggableSprite extends SpriteObject {
         } else {
             this.position.set(position.x-this.whereGrabbed.x, position.y-this.whereGrabbed.y);
         }
+
         
     }
     onOwnedInputEnd() {
-        console.log("owned input ended");
+        //console.log("owned input ended");
         this.beingGrabbed = false;
         this.requestsTopBilling = false;
         this.whereGrabbed.set(0,0);
         if(this.img[1]) {
             this.frameIndex = 0;
         }
+    }
+    update(){
+        super.update();
+        /* if(this.collidesWithLayer > 0){
+            let array = gameState.getCollidableGobjectsAtLayer(this.collidesWithLayer);
+            for(let i = 0; i < array.length; i++) {
+                if(areGobjectsCollidingAsRects(this, array[i])) {
+                    console.log("COLLISION!!!!");
+                }
+            }
+            
+        } */
+    }
+    
+    collidesAtPosition(position) {
+        if(this.collidesWithLayer > 0) {
+            let array = gameState.getCollidableGobjectsAtLayer(this.collidesWithLayer);
+            for(let i = 0; i < array.length; i++) {
+                if(areGobjectsCollidingAsRects({position: position, width: this.width, height: this.height}, array[i])) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 
