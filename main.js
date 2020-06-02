@@ -12,7 +12,10 @@ var canvasSize = {width: c.width, height: c.height};
 var windowSize = {height: window.innerHeight, width: window.innerWidth};
 var canvasPositionAndSizeInWindow; // Will contain left, top, width, height. Gets Updated at start, when the window is resized, and to fix problems on mobile every Click
 
-
+//Initialise
+let gameState;
+let gameInput;
+let gameRender;
 
 
 var framesDrawn = 0 ;
@@ -56,12 +59,8 @@ function run() {
 
 //console.log(spriteSheetMeta);
 
-//Initialise
-var gameState = new TurquoiseState();
 
-var gameInput;
 
-let gameRender = new TurquoiseRender(c, ctx);
 
 
 
@@ -77,12 +76,18 @@ if(runSettings.customCursors) {
   c.style.cursor = 'none';
 }
 
-
+let spriteSheetMeta;
 let spriteSheet = new Image();
 spriteSheet.src = "texture.png";
-let spriteSheetMeta;
 spriteSheet.onload = loadSpriteSheetJSONThenRun();
 
+
+function initialise() {
+  gameState = new TurquoiseState();
+  gameInput = new TurquoiseInput(c, gameState);
+  gameRender = new TurquoiseRender(c, ctx);
+  addContent(gameState);
+}
 
 function loadSpriteSheetJSONThenRun() {
   fetch('texture.json').then(function (response) {
@@ -90,8 +95,7 @@ function loadSpriteSheetJSONThenRun() {
   }).then(function (obj) {
     //console.log(obj);
     spriteSheetMeta = obj;
-    gameInput = new TurquoiseInput(c, gameState);
-    addContent(gameState);
+    initialise();
     run();
   }).catch(function (error) {
     console.error(error);

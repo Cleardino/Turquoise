@@ -88,7 +88,7 @@ class TurquoiseState {
             if(this.getGobjects()[i].requestsTopBilling && (i < (this.getGobjects().length - this.getNumberOfTopBillers()))) {
                 //console.log('we sliced');
                 let sliced = this.getGobjects().splice(i, 1);
-                console.log(this.getGobjects());
+                //console.log(this.getGobjects());
                 this.getGobjects().push(sliced[0]);
                 i--;
                 continue;
