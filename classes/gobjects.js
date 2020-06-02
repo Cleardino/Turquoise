@@ -672,6 +672,7 @@ class TwoStateSpriteObject extends SpriteObject {
         this.inStateB = false;
         this.hoverhand = true;
         this.transitionSpeed = transitionSpeed;
+        this.sprites = [];
         for(let i = 0; i < this.arrayOfURLs.length; i++) {
             this.sprites.push(createSheetPosition(this.arrayOfURLs[i]));
             //this.img.push(new Image());
