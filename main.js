@@ -51,13 +51,18 @@ function run() {
 
 
 
+
+
+
+//console.log(spriteSheetMeta);
+
 //Initialise
 var gameState = new TurquoiseState();
 
-addContent(gameState);
+var gameInput;
 
 let gameRender = new TurquoiseRender(c, ctx);
-let gameInput = new TurquoiseInput(c, gameState);
+
 
 
 if (!runSettings.trueSize) {
@@ -72,5 +77,23 @@ if(runSettings.customCursors) {
   c.style.cursor = 'none';
 }
 
-//Someday I will make it wait for everything to load before running.
-run();
+
+let spriteSheet = new Image();
+spriteSheet.src = "texture.png";
+let spriteSheetMeta;
+spriteSheet.onload = loadSpriteSheetJSONThenRun();
+
+
+function loadSpriteSheetJSONThenRun() {
+  fetch('texture.json').then(function (response) {
+    return response.json();
+  }).then(function (obj) {
+    //console.log(obj);
+    spriteSheetMeta = obj;
+    gameInput = new TurquoiseInput(c, gameState);
+    addContent(gameState);
+    run();
+  }).catch(function (error) {
+    console.error(error);
+  });
+}

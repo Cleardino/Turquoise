@@ -5,19 +5,24 @@ class TurquoiseInput {
         this.hover = new Position(-1, -1);
         this.cursorCSSStyleSetToHovering = false;
         var self = this;  //Is this weird.. realising it probably is..
-        this.cursor = new Image();
-        this.cursor.src = "images/cursor/macwhitestroke.png"
-        this.hand = new Image();
-        this.hand.src = "images/cursor/handv2.png"
-        this.pointer = new Image();
-        this.pointer.src = "images/cursor/macpointer.png"
-        this.pressedPointer = new Image();
-        this.pressedPointer.src = "images/cursor/macpointerpressed.png"
+        //this.cursor = new Image();
+        //this.cursor.src = "images/cursor/macwhitestroke.png"
+        this.cursor = createSheetPosition("images/cursor/macwhitestroke.png");
+        this.hand = createSheetPosition("images/cursor/handv2.png");
+        this.pointer = createSheetPosition("images/cursor/handv2.png");
+        this.pressedPointer = createSheetPosition("images/cursor/macpointerpressed.png");
+        this.closedHand = createSheetPosition("images/cursor/machold.png");
+        //this.hand = new Image();
+        //this.hand.src = "images/cursor/handv2.png"
+        //this.pointer = new Image();
+        //this.pointer.src = "images/cursor/macpointer.png"
+        //this.pressedPointer = new Image();
+        //this.pressedPointer.src = "images/cursor/macpointerpressed.png"
         this.mouseDown = false;
         this.grabhand;
         this.usePressedCursor = false;
-        this.closedHand = new Image();
-        this.closedHand.src = "images/cursor/machold.png"
+        //this.closedHand = new Image();
+        //this.closedHand.src = "images/cursor/machold.png"
         this.executeClick = false; //This allows click events to be cancelled if user leaves click area during cloesd hand
         this.currentlyClicking;
         this.objectLastHovering;
@@ -402,17 +407,22 @@ class TurquoiseInput {
 
     drawCustomCursor() {
         if (this.grabhand && this.usePressedCursor) {
-            ctx.drawImage(this.closedHand, this.hover.x + 2, this.hover.y + 4, 13, 12);
+            drawImageFromSheet(this.hover.x+2, this.hover.y+4, 13, 12, this.closedHand);
+            //ctx.drawImage(this.closedHand, this.hover.x + 2, this.hover.y + 4, 13, 12);
         }
         else if (this.grabhand) {
-            ctx.drawImage(this.hand, this.hover.x, this.hover.y, 16, 16);
+            drawImageFromSheet(this.hover.x, this.hover.y, 16, 16, this.hand)
+            //ctx.drawImage(this.hand, this.hover.x, this.hover.y, 16, 16);
         }
         else if (this.pointerhand && this.usePressedCursor) {
-            ctx.drawImage(this.pressedPointer, this.hover.x, this.hover.y, 16, 16);
+            drawImageFromSheet(this.hover.x, this.hover.y, 16, 16, this.pressedPointer);
+            //ctx.drawImage(this.pressedPointer, this.hover.x, this.hover.y, 16, 16);
         } else if (this.pointerhand){
-            ctx.drawImage(this.pointer, this.hover.x, this.hover.y, 16, 16);
+            drawImageFromSheet(this.hover.x, this.hover.y, 16, 16, this.pointer);
+            //ctx.drawImage(this.pointer, this.hover.x, this.hover.y, 16, 16);
         } else {
-            ctx.drawImage(this.cursor, this.hover.x, this.hover.y, 11, 16);
+            drawImageFromSheet(this.hover.x, this.hover.y, 11, 16, this.cursor);
+            //ctx.drawImage(this.cursor, this.hover.x, this.hover.y, 11, 16);
             if (this.usePressedCursor) {
                 this.usePressedCursor = false;
                 this.executeClick = false;

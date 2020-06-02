@@ -23,8 +23,8 @@ function addContent(state) {
     //console.log(line1.isIntersecting(line2));
     //let marioSpawner = new BouncyImageSpawner(15, 28, "images/mario.png", 10, "mario");
     
-    let texBox = [[55, 1], [101, 1], [101, 36], [191, 54], [192, 83], [199, 100], [193, 124], [150, 154], [142, 169], [146, 190], [140, 194], [115, 184], [108, 163], [91, 140], [79, 124], [61, 124], [54, 137], [30, 121], [29, 115], [1, 82], [54, 81]];
-    let texas = new BouncyImageSpawner(200, 195, "images/texas.png", 3, "texas", 8, texBox);
+    //let texBox = [[55, 1], [101, 1], [101, 36], [191, 54], [192, 83], [199, 100], [193, 124], [150, 154], [142, 169], [146, 190], [140, 194], [115, 184], [108, 163], [91, 140], [79, 124], [61, 124], [54, 137], [30, 121], [29, 115], [1, 82], [54, 81]];
+    //let texas = new BouncyImageSpawner(200, 195, "images/texas.png", 3, "texas", 8, texBox);
     
     //[[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]] ball I think
     //*** Content Being Used ***   
@@ -41,8 +41,8 @@ function addContent(state) {
     let block = new GravitySprite("block", new Position(20, 20), 68, 67, "images/block.png", false);
     let ball = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
     
-    let titleScreen = new Scene("TitleScreen", [title, mouse, playButton, testTexas, paper/*dragTexas*/], [texas]);
-    //titleScreen.spawn();
+    let titleScreen = new Scene("TitleScreen", [title, mouse, playButton, testTexas, paper/*dragTexas*/]/*, [texas]*/);
+    titleScreen.spawn();
     let bouncyScene = new Scene("BouncyScene", [testswitch, block, ball, playButton2], [ /*dvdSpawner, bdSpawner, marioSpawner,texas*/], "images/bg.png");
 
     let wall1 = new SpriteObject("wall1", new Position(417,165), 50, 15, "images/black.png", false, 1);

@@ -1,13 +1,19 @@
 /*Default Game Object*/
 class SpriteObject {
-    constructor(name, position, width, height, imgURL, clickShapeNums, collisionLayer = 0) {
+    constructor(name, position, width, height, imgString, clickShapeNums, collisionLayer = 0) {
         this.updateEveryFrame = true;
         this.name = name;
         this.position = position;
-        if(imgURL) {
+        /* if(imgString) {
             this.img = [new Image()];
-            this.img[0].src = imgURL;
-        }
+            this.img[0].src = imgString;
+        } else {
+            this.img = false;
+        } */
+        this.imgString = imgString;
+
+        this.sprites = [createSheetPosition(imgString)];
+
         this.frameIndex = 0; //This index determines the index to use with both ClickShape, and Animation Frames, so they aught to match if you need a unique clickshape every frame. This is a bad way of doing things.
         
         //Sprite Dimensions
@@ -74,7 +80,8 @@ class SpriteObject {
     //Draws object to canvas. Called by GameRender on every object in the current scene every loop.
     draw(x = Math.round(this.position.x), y = Math.round(this.position.y)) {
         ctx.globalAlpha = this.opacity;
-        ctx.drawImage(this.getImage(), x, y, this.width, this.height);
+        //ctx.drawImage(this.getImage(), x, y, this.width, this.height);
+        ctx.drawImage(spriteSheet, this.sprites[this.frameIndex].xInSheet, this.sprites[this.frameIndex].yInSheet, this.sprites[this.frameIndex].spriteW, this.sprites[this.frameIndex].spriteH, x, y, this.width, this.height);
         ctx.globalAlpha = 1;
     }
 
@@ -241,8 +248,9 @@ class DraggableSprite extends SpriteObject {
     constructor(name, position, width, height, imgURL, altImg = false, clickShapeNums = false, keepWithin = false, collidesWithLayer = 0){
         super(name, position, width, height, imgURL, clickShapeNums);
         if(altImg) {
-            this.img.push(new Image());
-            this.img[1].src = altImg;
+            this.sprites.push(createSheetPosition(altImg));
+            //this.img.push(new Image());
+            //this.img[1].src = altImg;
         }
         if(keepWithin) {
             this.keepWithin = [keepWithin[0], new Position(keepWithin[1].x-width, keepWithin[1].y-height)];
@@ -257,7 +265,7 @@ class DraggableSprite extends SpriteObject {
     onMouseOrTapDown(position) {
         this.beingGrabbed = true;
         this.requestsTopBilling = true;
-        if(this.img[1]) {
+        if(this.sprites[1]) {
             this.frameIndex = 1;
         }
         let rx = position.x - this.position.x;
@@ -302,7 +310,7 @@ class DraggableSprite extends SpriteObject {
         this.beingGrabbed = false;
         this.requestsTopBilling = false;
         this.whereGrabbed.set(0,0);
-        if(this.img[1]) {
+        if(this.sprites[1]) {
             this.frameIndex = 0;
         }
     }
@@ -561,10 +569,12 @@ class PlayButton extends SpriteObject { //Starting by making a specific one, the
         super("playButton", position, 72, 20, "images/Play.png");
         this.clickRectanglePadding = 20;
         this.pointerhand = true;
-        this.img.push(new Image());
-        this.img.push(new Image());
-        this.img[1].src = "images/Play-hover.png";
-        this.img[2].src = "images/Play-down.png";
+        this.sprites.push(createSheetPosition("images/Play-hover.png"));
+        this.sprites.push(createSheetPosition("images/Play-down.png"));
+        //this.img.push(new Image());
+        //this.img.push(new Image());
+        //this.img[1].src = "images/Play-hover.png";
+        //this.img[2].src = "images/Play-down.png";
     }
     onClickOrTap(){
         super.onClickOrTap();
@@ -645,7 +655,7 @@ All images provided should have the same width and height. If state B specifics 
 Speed is how many repeat frames to insert between provided frames. 0 is fastest.*/
 class TwoStateSpriteObject extends SpriteObject {
     constructor(name, position, width, height, defaultSpriteURL, stateBSpriteURL = null, transitionFramesURLs = null, transitionSpeed = 0, defaultClickShape = null, stateBClickShape = null) {
-        super(name, position, width, height, null, makeTSClickShapeArray(defaultClickShape, transitionFramesURLs, stateBClickShape));
+        super(name, position, width, height, defaultSpriteURL, makeTSClickShapeArray(defaultClickShape, transitionFramesURLs, stateBClickShape));
         this.arrayOfURLs = [defaultSpriteURL];
         this.whenStartedToWait;
         //this.arrayOfURLs = ["ha"];
@@ -657,14 +667,15 @@ class TwoStateSpriteObject extends SpriteObject {
             this.arrayOfURLs.push(stateBSpriteURL);
         }
 
-        this.img = [];
+        //this.img = [];
         this.stateBIndex = this.arrayOfURLs.length - 1;
         this.inStateB = false;
         this.hoverhand = true;
         this.transitionSpeed = transitionSpeed;
         for(let i = 0; i < this.arrayOfURLs.length; i++) {
-            this.img.push(new Image());
-            this.img[i].src = this.arrayOfURLs[i];
+            this.sprites.push(createSheetPosition(this.arrayOfURLs[i]));
+            //this.img.push(new Image());
+            //this.img[i].src = this.arrayOfURLs[i];
         }
         
     }

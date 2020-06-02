@@ -1,8 +1,32 @@
 {
   "frames": {
-    "images/mouse.png": {
+    "images/bg.png": {
       "frame": {
         "x": 0,
+        "y": 0,
+        "w": 640,
+        "h": 360
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 640,
+        "h": 360
+      },
+      "sourceSize": {
+        "w": 640,
+        "h": 360
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "images/mouse.png": {
+      "frame": {
+        "x": 640,
         "y": 0,
         "w": 385,
         "h": 270
@@ -24,9 +48,33 @@
         "y": 0.5
       }
     },
+    "images/Fromagerie.png": {
+      "frame": {
+        "x": 1025,
+        "y": 0,
+        "w": 378,
+        "h": 81
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 378,
+        "h": 81
+      },
+      "sourceSize": {
+        "w": 378,
+        "h": 81
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
     "images/texas.png": {
       "frame": {
-        "x": 385,
+        "x": 1403,
         "y": 0,
         "w": 200,
         "h": 195
@@ -50,8 +98,8 @@
     },
     "images/switch/switch1.png": {
       "frame": {
-        "x": 585,
-        "y": 0,
+        "x": 1025,
+        "y": 81,
         "w": 150,
         "h": 150
       },
@@ -74,8 +122,8 @@
     },
     "images/switch/switch2.png": {
       "frame": {
-        "x": 735,
-        "y": 0,
+        "x": 1175,
+        "y": 81,
         "w": 150,
         "h": 150
       },
@@ -96,9 +144,153 @@
         "y": 0.5
       }
     },
+    "images/Play-down.png": {
+      "frame": {
+        "x": 1325,
+        "y": 81,
+        "w": 72,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 72,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 20
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "images/black.png": {
+      "frame": {
+        "x": 1397,
+        "y": 81,
+        "w": 1,
+        "h": 1
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1
+      },
+      "sourceSize": {
+        "w": 1,
+        "h": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "images/Play-hover.png": {
+      "frame": {
+        "x": 1325,
+        "y": 101,
+        "w": 72,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 72,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 20
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "images/Play.png": {
+      "frame": {
+        "x": 1325,
+        "y": 121,
+        "w": 72,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 72,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 20
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "images/ball.png": {
+      "frame": {
+        "x": 1325,
+        "y": 141,
+        "w": 68,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 68,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "images/cursor/macnostroke.png": {
+      "frame": {
+        "x": 1393,
+        "y": 141,
+        "w": 8,
+        "h": 14
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 14
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 14
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
     "images/switch/switch3.png": {
       "frame": {
-        "x": 885,
+        "x": 1603,
         "y": 0,
         "w": 150,
         "h": 150
@@ -122,7 +314,7 @@
     },
     "images/switch/switch4.png": {
       "frame": {
-        "x": 1035,
+        "x": 1753,
         "y": 0,
         "w": 150,
         "h": 150
@@ -144,48 +336,24 @@
         "y": 0.5
       }
     },
-    "images/switch/switch5.png": {
+    "images/paper.png": {
       "frame": {
-        "x": 1185,
+        "x": 1903,
         "y": 0,
-        "w": 150,
-        "h": 150
+        "w": 122,
+        "h": 154
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 150,
-        "h": 150
+        "w": 122,
+        "h": 154
       },
       "sourceSize": {
-        "w": 150,
-        "h": 150
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "images/finish.png": {
-      "frame": {
-        "x": 1335,
-        "y": 0,
-        "w": 100,
-        "h": 35
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 100,
-        "h": 35
-      },
-      "sourceSize": {
-        "w": 100,
-        "h": 35
+        "w": 122,
+        "h": 154
       },
       "pivot": {
         "x": 0.5,
@@ -194,7 +362,7 @@
     },
     "images/cursor/handv1.png": {
       "frame": {
-        "x": 1435,
+        "x": 2025,
         "y": 0,
         "w": 16,
         "h": 16
@@ -218,8 +386,8 @@
     },
     "images/cursor/handv2.png": {
       "frame": {
-        "x": 1451,
-        "y": 0,
+        "x": 2025,
+        "y": 16,
         "w": 16,
         "h": 16
       },
@@ -242,8 +410,8 @@
     },
     "images/cursor/macpointer.png": {
       "frame": {
-        "x": 1467,
-        "y": 0,
+        "x": 2025,
+        "y": 32,
         "w": 16,
         "h": 16
       },
@@ -266,8 +434,32 @@
     },
     "images/cursor/macpointerleft.png": {
       "frame": {
-        "x": 1483,
+        "x": 2025,
+        "y": 48,
+        "w": 16,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
         "y": 0,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "images/cursor/macpointerpressed.png": {
+      "frame": {
+        "x": 2025,
+        "y": 64,
         "w": 16,
         "h": 16
       },
@@ -290,8 +482,8 @@
     },
     "images/cursor/macpointerright.png": {
       "frame": {
-        "x": 1499,
-        "y": 0,
+        "x": 2025,
+        "y": 80,
         "w": 16,
         "h": 16
       },
@@ -314,8 +506,8 @@
     },
     "images/mario.png": {
       "frame": {
-        "x": 1515,
-        "y": 0,
+        "x": 2025,
+        "y": 96,
         "w": 15,
         "h": 28
       },
@@ -338,8 +530,8 @@
     },
     "images/cursor/machold.png": {
       "frame": {
-        "x": 1435,
-        "y": 16,
+        "x": 2025,
+        "y": 124,
         "w": 13,
         "h": 12
       },
@@ -362,8 +554,8 @@
     },
     "images/cursor/macwhitestroke.png": {
       "frame": {
-        "x": 1448,
-        "y": 16,
+        "x": 2025,
+        "y": 136,
         "w": 11,
         "h": 16
       },
@@ -384,24 +576,120 @@
         "y": 0.5
       }
     },
-    "images/cursor/macnostroke.png": {
+    "images/switch/switch5.png": {
       "frame": {
-        "x": 1435,
-        "y": 28,
-        "w": 8,
-        "h": 14
+        "x": 1603,
+        "y": 150,
+        "w": 150,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 8,
-        "h": 14
+        "w": 150,
+        "h": 150
       },
       "sourceSize": {
-        "w": 8,
-        "h": 14
+        "w": 150,
+        "h": 150
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "images/texas2.png": {
+      "frame": {
+        "x": 1753,
+        "y": 150,
+        "w": 150,
+        "h": 146
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 150,
+        "h": 146
+      },
+      "sourceSize": {
+        "w": 150,
+        "h": 146
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "images/finish.png": {
+      "frame": {
+        "x": 1903,
+        "y": 154,
+        "w": 100,
+        "h": 35
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 100,
+        "h": 35
+      },
+      "sourceSize": {
+        "w": 100,
+        "h": 35
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "images/texas2bigger.png": {
+      "frame": {
+        "x": 1393,
+        "y": 195,
+        "w": 150,
+        "h": 146
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 150,
+        "h": 146
+      },
+      "sourceSize": {
+        "w": 150,
+        "h": 146
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "images/block.png": {
+      "frame": {
+        "x": 1325,
+        "y": 208,
+        "w": 68,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 68,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 67
       },
       "pivot": {
         "x": 0.5,
@@ -410,8 +698,8 @@
     },
     "images/finish2.png": {
       "frame": {
-        "x": 1335,
-        "y": 0,
+        "x": 1903,
+        "y": 154,
         "w": 100,
         "h": 35
       },
@@ -439,8 +727,8 @@
     "image": "texture.png",
     "format": "RGBA8888",
     "size": {
-      "w": 1530,
-      "h": 270
+      "w": 2041,
+      "h": 360
     },
     "scale": 1
   }
