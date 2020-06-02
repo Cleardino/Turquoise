@@ -407,21 +407,21 @@ class TurquoiseInput {
 
     drawCustomCursor() {
         if (this.grabhand && this.usePressedCursor) {
-            drawImageFromSheet(this.hover.x+2, this.hover.y+4, 13, 12, this.closedHand);
+            drawImageFromSheet(this.hover.x+2, this.hover.y+4, this.closedHand);
             //ctx.drawImage(this.closedHand, this.hover.x + 2, this.hover.y + 4, 13, 12);
         }
         else if (this.grabhand) {
-            drawImageFromSheet(this.hover.x, this.hover.y, 16, 16, this.hand)
+            drawImageFromSheet(this.hover.x, this.hover.y, this.hand)
             //ctx.drawImage(this.hand, this.hover.x, this.hover.y, 16, 16);
         }
         else if (this.pointerhand && this.usePressedCursor) {
-            drawImageFromSheet(this.hover.x, this.hover.y, 16, 16, this.pressedPointer);
+            drawImageFromSheet(this.hover.x, this.hover.y, this.pressedPointer);
             //ctx.drawImage(this.pressedPointer, this.hover.x, this.hover.y, 16, 16);
         } else if (this.pointerhand){
-            drawImageFromSheet(this.hover.x, this.hover.y, 16, 16, this.pointer);
+            drawImageFromSheet(this.hover.x, this.hover.y, this.pointer);
             //ctx.drawImage(this.pointer, this.hover.x, this.hover.y, 16, 16);
         } else {
-            drawImageFromSheet(this.hover.x, this.hover.y, 11, 16, this.cursor);
+            drawImageFromSheet(this.hover.x, this.hover.y, this.cursor);
             //ctx.drawImage(this.cursor, this.hover.x, this.hover.y, 11, 16);
             if (this.usePressedCursor) {
                 this.usePressedCursor = false;

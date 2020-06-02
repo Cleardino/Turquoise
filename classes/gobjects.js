@@ -81,7 +81,8 @@ class SpriteObject {
     draw(x = Math.round(this.position.x), y = Math.round(this.position.y)) {
         ctx.globalAlpha = this.opacity;
         //ctx.drawImage(this.getImage(), x, y, this.width, this.height);
-        ctx.drawImage(spriteSheet, this.sprites[this.frameIndex].xInSheet, this.sprites[this.frameIndex].yInSheet, this.sprites[this.frameIndex].spriteW, this.sprites[this.frameIndex].spriteH, x, y, this.width, this.height);
+        drawImageFromSheet(x, y, this.sprites[this.frameIndex]);
+        //ctx.drawImage(spriteSheet, this.sprites[this.frameIndex].xInSheet, this.sprites[this.frameIndex].yInSheet, this.sprites[this.frameIndex].spriteW, this.sprites[this.frameIndex].spriteH, x, y, this.width, this.height);
         ctx.globalAlpha = 1;
     }
 
@@ -96,9 +97,9 @@ class SpriteObject {
         
         //gameState.getGobjects
     }
-    getImage() {
+    /* getImage() {
         return this.img[this.frameIndex];
-    }
+    } */
     updatePosition() {
         this.position.add(this.velocity);
     }
@@ -429,8 +430,8 @@ class ThrowableSprite extends DraggableSprite {
         }
         
         this.lastFivePositionsDuringMove = [];
-        console.log(this.velocity);
-        console.log("End Hold");
+        //console.log(this.velocity);
+        //console.log("End Hold");
     }
 
 
@@ -491,7 +492,7 @@ class GravitySprite extends ThrowableSprite {
     checkFloor() {
         let floorHeight = 25;
         if ((this.position.y +this.height) > canvasSize.height - floorHeight) {
-            console.log("floor!");
+            //console.log("floor!"); this seems to happen more than it should..
             this.position.y = (canvasSize.height - floorHeight - this.height);
             this.velocity.x *= this.floorFriction;
             //this.velocity.y = -this.velocity.y;
@@ -523,12 +524,12 @@ class BouncyBall extends GravitySprite {
         if ((this.position.y +this.height) > canvasSize.height - floorHeight) {
             this.position.y--;
             this.velocity.y = (-this.velocity.y*0.7);
-            console.log(this.velocity.y);
+            //console.log(this.velocity.y);
             if(this.position.y > canvasSize.height-floorHeight-this.height) {
                 this.position.y = canvasSize.height-floorHeight-this.height;
             }
             if(this.velocity.y > -3 && this.velocity.y < 0) {
-                console.log("stopped");
+                //console.log("stopped");
                 this.velocity.y = 0;
                 this.position.y = (canvasSize.height - floorHeight - this.height);
                 this.velocity.x *= this.floorFriction;
@@ -717,7 +718,7 @@ class TwoStateSpriteObject extends SpriteObject {
             this.frameIndex++;
             this.whenStartedToWait = framesDrawn;
             if (this.frameIndex == this.stateBIndex) {
-                console.log("made interactable1");
+                //console.log("made interactable1");
                 this.interactable = true;
             }
         }
@@ -725,7 +726,7 @@ class TwoStateSpriteObject extends SpriteObject {
             this.frameIndex--;
             this.whenStartedToWait = framesDrawn;
             if (this.frameIndex == 0) {
-                console.log("made interactable2");
+                //console.log("made interactable2");
                 this.interactable = true;
             }
         }

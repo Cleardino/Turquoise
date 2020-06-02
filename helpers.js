@@ -55,11 +55,28 @@ function areGobjectsCollidingAsRects(obj1, obj2) {
 }
 
 function createSheetPosition(imgString) {
-    return {xInSheet: spriteSheetMeta.frames[imgString].frame.x, yInSheet: spriteSheetMeta.frames[imgString].frame.y, spriteW: spriteSheetMeta.frames[imgString].frame.w, spriteH: spriteSheetMeta.frames[imgString].frame.h}
+    return {xInSheet: spriteSheetMeta.frames[imgString].frame.x, yInSheet: spriteSheetMeta.frames[imgString].frame.y, spriteW: spriteSheetMeta.frames[imgString].frame.w, spriteH: spriteSheetMeta.frames[imgString].frame.h, offsetX: spriteSheetMeta.frames[imgString].spriteSourceSize.x, offsetY: spriteSheetMeta.frames[imgString].spriteSourceSize.y, rotated: spriteSheetMeta.frames[imgString].rotated}
 }
 
-function drawImageFromSheet(x, y, w, h, sheetPosition) {
-    ctx.drawImage(spriteSheet, sheetPosition.xInSheet, sheetPosition.yInSheet, sheetPosition.spriteW, sheetPosition.spriteH, x, y, w, h);
+function drawImageFromSheet(x, y, sheetPosition) {
+    //ctx.save();
+    if(sheetPosition.rotated) {
+        console.log("oh no I can't draw rotated images.");
+        //ctx.save();
+        //ctx.rotate(Math.PI / 2);
+        //context.translate(0,0); 
+        //ctx.drawImage(spriteSheet, sheetPosition.xInSheet, sheetPosition.yInSheet, sheetPosition.spriteH, sheetPosition.spriteW, x + sheetPosition.offsetX, y + sheetPosition.offsetY, sheetPosition.spriteH, sheetPosition.spriteW);
+        //ctx.rotate(-Math.PI / 2);
+        //ctx.restore();
+        //ctx.rotate(270 * Math.PI / 180);
+    } else {
+        ctx.drawImage(spriteSheet, sheetPosition.xInSheet, sheetPosition.yInSheet, sheetPosition.spriteW, sheetPosition.spriteH, x + sheetPosition.offsetX, y + sheetPosition.offsetY, sheetPosition.spriteW, sheetPosition.spriteH);
+    }
+    /* if(sheetPosition.rotated) {
+        ctx.rotate(270 * Math.PI / 180);
+    } */
+    //ctx.setTransform(1,0,0,1,0,0);
+    //ctx.restore();
 }
 
 //should this be in a class,? not just loose
