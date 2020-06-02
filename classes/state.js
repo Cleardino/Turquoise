@@ -136,8 +136,9 @@ class Scene {
         this.spawners = spawners;
         this.bg;
         if(bgImgUrl) {
-            this.bg = new Image();
-            this.bg.src = bgImgUrl;
+            this.bg = createSheetPosition(bgImgUrl);
+            //this.bg = new Image();
+            //this.bg.src = bgImgUrl;
         } else {
             this.bg = false;
         }
