@@ -40,10 +40,17 @@ function addContent(state) {
     let paper = new ThrowableSprite("paper", new Position(16, 14), 122, 154, "images/paper.png", false, [new Position(0,0), new Position(canvasSize.width, canvasSize.height)], 0.9, 0.5);
     let block = new GravitySprite("block", new Position(20, 20), 68, 67, "images/block.png", false);
     let ball = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
-    
+    let ball2 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    let ball3 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    let ball4 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    let ball5 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    let ball6 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    let ball7 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    let ball8 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+
     let titleScreen = new Scene("TitleScreen", [title, mouse, playButton, testTexas, paper/*dragTexas*/]/*, [texas]*/);
     titleScreen.spawn();
-    let bouncyScene = new Scene("BouncyScene", [testswitch, block, ball, playButton2], [ /*dvdSpawner, bdSpawner, marioSpawner,texas*/], "images/bg.png");
+    let bouncyScene = new Scene("BouncyScene", [testswitch, block, ball,ball2,ball3,ball4,ball5,ball6,ball7,ball8, playButton2], [ /*dvdSpawner, bdSpawner, marioSpawner,texas*/], "images/bg.png");
 
     let wall1 = new SpriteObject("wall1", new Position(417,165), 50, 15, "images/wall.png", false, 1);
     let wall2 = new SpriteObject("wall2", new Position(367,165), 50, 15, "images/wall.png", false, 1);
