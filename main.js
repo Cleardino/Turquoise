@@ -19,24 +19,43 @@ let gameRender;
 
 
 var framesDrawn = 0 ;
-var time = new Date();
+//var time = new Date();
 
+let secsElapsed = 0;
+let timeLastDrew = 0;
+let currentTime = 0;
+let dontRestrain = false;
 
-//someday I will restrain the loop so that it's impossible to run faster than 60 times per second.
-function run() {
+function run(timeStamp) {
     requestAnimationFrame(run);
-
+    if(timeStamp < 1000) {
+      dontRestrain = true;
+    } else{
+      dontRestrain = false;
+    }
+    secsElapsed = (timeStamp - timeLastDrew)/1000;
+    currentTime = timeStamp;
+    //console.log(timeStamp);
+    fps = Math.round(1 / secsElapsed); //not sure this works very well
     if (!developerModeVariables.freeze) {
-      gameState.update();
-      gameRender.draw(gameState);
-      gameInput.updateOngoingInput();
+      if(dontRestrain || (currentTime-timeLastDrew) > 15) {
+        gameState.update();
+        gameRender.draw(gameState);
+        gameInput.updateOngoingInput();
+        
+        //console.log(currentTime-timeLastDrew);
+        timeLastDrew = currentTime;
+      }
       
       //ctx.filter = 'url(#remove-alpha)';
       //ctx.font = "16px ChiKareGo2";
       //ctx.fillText("oh myyy goood im so glad this works", 12, 40);
     }
     
-
+    /* ctx.font = '25px Arial';
+    ctx.fillStyle = 'black';
+    ctx.fillText("FPS: " + fps, 10, 30); */
+    //draw();
     framesDrawn++;
     //time = time - new Date();
     
@@ -96,7 +115,7 @@ function loadSpriteSheetJSONThenRun() {
     //console.log(obj);
     spriteSheetMeta = obj;
     initialise();
-    run();
+    run(0);
   }).catch(function (error) {
     console.error(error);
   });
