@@ -1,8 +1,7 @@
-programming by @elzbenz
-art by @feraligtr
+programming & tarot pixel redraws by @elzdino
 
-credit font
-credit guy who taught me line intersection
+
+mouse illustration left in the game files - @feraligtr
 
 Original Mac arrow cursor and grab hand used without permission. Original design by Susan Kare.
 
@@ -14,3 +13,5 @@ no way ill use it, but if I do, I would have to attribute texas https://commons.
 Sounds from Myst temp audio used without permission.
 
 Temporary ball asset is copyright infringement from google images
+
+title screen image is public domain - https://commons.m.wikimedia.org/wiki/File:Tavole_di_Rutilio_-_Ciclo_lunare.png

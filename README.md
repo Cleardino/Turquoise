@@ -1,5 +1,8 @@
 # Turquoise
 playing around with javascript.
-at the moment my code contributions are Copyright © 2020 Cleardino unless otherwise stated, and any collaborators will retain copyright over anything they add
+
+Originally programmed in 2020,  but I'm back to pick up the pieces.
+
+all of my code contributions and tarot redraws are Copyright © 2020 Cleardino unless otherwise stated
 
 playable here https://cleardino.github.io/Turquoise/

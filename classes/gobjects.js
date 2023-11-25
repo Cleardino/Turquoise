@@ -567,11 +567,11 @@ class BouncyBall extends GravitySprite {
 
 class PlayButton extends SpriteObject { //Starting by making a specific one, then will make something generic. Imagine even if a class could accept button text, and function to be called on click
     constructor(position) {
-        super("playButton", position, 72, 20, "images/Play.png");
+        super("playButton", position, 72, 20, "images/start.png");
         this.clickRectanglePadding = 20;
         this.pointerhand = true;
-        this.sprites.push(createSheetPosition("images/Play-hover.png"));
-        this.sprites.push(createSheetPosition("images/Play-down.png"));
+        this.sprites.push(createSheetPosition("images/starthover.png"));
+        this.sprites.push(createSheetPosition("images/startclick.png"));
         //this.img.push(new Image());
         //this.img.push(new Image());
         //this.img[1].src = "images/Play-hover.png";

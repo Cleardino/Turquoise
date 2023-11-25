@@ -29,38 +29,61 @@ function addContent(state) {
     //[[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]] ball I think
     //*** Content Being Used ***   
     
-    let testswitch = new DragSwitch(new Position(500, 0));
+    //let testswitch = new DragSwitch(new Position(500, 0));
     
-    let mouse = new SpriteObject("mouse", new Position(138, 0), 385, 270, "images/mouse.png");
-    
-    let title = new SpriteObject("title", new Position(128, 254), 378, 81, "images/Fromagerie.png");
-    let playButton = new PlayButton(new Position(185, 225));
-    let playButton2 = new PlayButton(new Position(558, 5));
-    let testTexas = new DraggableSprite("texas", new Position(483, 2), 150, 146, "images/texas2.png", "images/texas2bigger.png", [[42, 62], [44, 7], [76, 8], [75, 28], [138, 38], [144, 71], [141, 92], [108, 114], [107, 138], [102, 140], [85, 132], [76, 116], [59, 92], [47, 91], [44, 101], [33, 98], [27, 92], [24, 81], [4, 62]], [new Position(0,0), new Position(canvasSize.width, canvasSize.height)]);
-    let paper = new ThrowableSprite("paper", new Position(16, 14), 122, 154, "images/paper.png", false, [new Position(0,0), new Position(canvasSize.width, canvasSize.height)], 0.9, 0.5);
-    let block = new GravitySprite("block", new Position(20, 20), 68, 67, "images/block.png", false);
-    let ball = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
-    let ball2 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
-    let ball3 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
-    let ball4 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
-    let ball5 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
-    let ball6 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
-    let ball7 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
-    let ball8 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
 
-    let titleScreen = new Scene("TitleScreen", [title, mouse, playButton, testTexas, paper/*dragTexas*/]/*, [texas]*/);
+    // let mouse = new SpriteObject("mouse", new Position(0, 0), 385, 270, "images/mouse.png");
+    //let mouse = new SpriteObject("mouse", new Position(138, 0), 385, 270, "images/mouse.png");
+    
+    // let title = new SpriteObject("title", new Position(0, 254), 378, 81, "images/Fromagerie.png");
+    //let title = new SpriteObject("title", new Position(128, 254), 378, 81, "images/Fromagerie.png");
+    let moon = new SpriteObject("moon", new Position(22, 85), 312, 310, "images/moon.png");
+    let title = new SpriteObject("title", new Position(56, 411), 271, 82, "images/TarotTitle.png");
+    // let playButton = new PlayButton(new Position(0, 225));
+    let playButton2 = new PlayButton(new Position(150, 510));
+    // let testTexas = new DraggableSprite("texas", new Position(20, 100), 150, 146, "images/texas2.png", "images/texas2bigger.png", [[42, 62], [44, 7], [76, 8], [75, 28], [138, 38], [144, 71], [141, 92], [108, 114], [107, 138], [102, 140], [85, 132], [76, 116], [59, 92], [47, 91], [44, 101], [33, 98], [27, 92], [24, 81], [4, 62]], [new Position(0,0), new Position(canvasSize.width, canvasSize.height)]);
+    //let testTexas = new DraggableSprite("texas", new Position(483, 2), 150, 146, "images/texas2.png", "images/texas2bigger.png", [[42, 62], [44, 7], [76, 8], [75, 28], [138, 38], [144, 71], [141, 92], [108, 114], [107, 138], [102, 140], [85, 132], [76, 116], [59, 92], [47, 91], [44, 101], [33, 98], [27, 92], [24, 81], [4, 62]], [new Position(0,0), new Position(canvasSize.width, canvasSize.height)]);
+    // let paper = new ThrowableSprite("paper", new Position(16, 14), 122, 154, "images/paper.png", false, [new Position(0,0), new Position(canvasSize.width, canvasSize.height)], 0.9, 0.5);
+    //let paper2 = new ThrowableSprite("paper", new Position(16, 14), 122, 154, "images/paper.png", false, [new Position(0,0), new Position(canvasSize.width, canvasSize.height)], 0.9, 0.5);
+    let tarot1 = new ThrowableSprite("tarot1", new Position(16, 14), 102, 171, "images/The_Empress_100_refined.png", false, [new Position(0,0), new Position(canvasSize.width, canvasSize.height)], 0.9, 0.5);
+    let tarot2 = new ThrowableSprite("tarot2", new Position(21, 14), 102, 171, "images/The_High_Priestess_100_refined.png", false, [new Position(0,0), new Position(canvasSize.width, canvasSize.height)], 0.9, 0.5);
+    let tarot3 = new ThrowableSprite("tarot3", new Position(26, 14), 102, 171, "images/The_Magician_100_refined.png", false, [new Position(0,0), new Position(canvasSize.width, canvasSize.height)], 0.9, 0.5);
+
+    //let block = new GravitySprite("block", new Position(20, 20), 68, 67, "images/block.png", false);
+    // let ball = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    // let ball2 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    // let ball3 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    // let ball4 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    // let ball5 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    // let ball6 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    // let ball7 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+    // let ball8 = new BouncyBall("ball", new Position(180,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 335)]);
+
+    // let ball = new BouncyBall("ball", new Position(30,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 615)]);
+    // let ball2 = new BouncyBall("ball", new Position(30,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 615)]);
+    // let ball3 = new BouncyBall("ball", new Position(30,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 615)]);
+    // let ball4 = new BouncyBall("ball", new Position(30,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 615)]);
+    // let ball5 = new BouncyBall("ball", new Position(30,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 615)]);
+    // let ball6 = new BouncyBall("ball", new Position(30,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 615)]);
+    // let ball7 = new BouncyBall("ball", new Position(30,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 615)]);
+    // let ball8 = new BouncyBall("ball", new Position(30,10), 68, 67, "images/ball.png", [[34, 4], [51, 10], [61, 21], [64, 33], [61, 48], [52, 59], [35, 65], [19, 61], [11, 53], [5, 43], [4, 34], [7, 20], [13, 13], [24, 6]],[new Position(0,0), new Position(canvasSize.width, 615)]);
+
+
+
+    let titleScreen = new Scene("TitleScreen", [moon,title,playButton2]);
+    let tarotScene = new Scene("TarotScene", [tarot1, tarot2, tarot3]);
     titleScreen.spawn();
-    let bouncyScene = new Scene("BouncyScene", [testswitch, block, ball,ball2,ball3,ball4,ball5,ball6,ball7,ball8, playButton2], [ /*dvdSpawner, bdSpawner, marioSpawner,texas*/], "images/bg.png");
+    //let bouncyScene = new Scene("BouncyScene", [testswitch, block, ball,ball2,ball3,ball4,ball5,ball6,ball7,ball8, playButton2], [ /*dvdSpawner, bdSpawner, marioSpawner,texas*/]);
 
-    let wall1 = new SpriteObject("wall1", new Position(417,165), 50, 15, "images/wall.png", false, 1);
-    let wall2 = new SpriteObject("wall2", new Position(367,165), 50, 15, "images/wall.png", false, 1);
-    let wall3 = new SpriteObject("wall3", new Position(317,165), 50, 15, "images/wall.png", false, 1);
-    let wall4 = new SpriteObject("wall4", new Position(267,165), 50, 15, "images/wall.png", false, 1);
-    let dragMe = new DraggableSprite("dragMe", new Position(0,0), 20, 20, "images/square.png", false, false, [new Position(0,0), new Position(canvasSize.width, canvasSize.height)], 1);
+    // let wall1 = new SpriteObject("wall1", new Position(417,165), 50, 15, "images/wall.png", false, 1);
+    // let wall2 = new SpriteObject("wall2", new Position(367,165), 50, 15, "images/wall.png", false, 1);
+    // let wall3 = new SpriteObject("wall3", new Position(317,165), 50, 15, "images/wall.png", false, 1);
+    // let wall4 = new SpriteObject("wall4", new Position(267,165), 50, 15, "images/wall.png", false, 1);
+    // let dragMe = new DraggableSprite("dragMe", new Position(0,0), 20, 20, "images/square.png", false, false, [new Position(0,0), new Position(canvasSize.width, canvasSize.height)], 1);
 
-    let collisionScene = new Scene("CollisionScene", [dragMe, wall1, wall2, wall3, wall4]);
-    bouncyScene.spawn();
-    state.addScenes([titleScreen, bouncyScene, collisionScene]);
+    //let collisionScene = new Scene("CollisionScene", [dragMe, wall1, wall2, wall3, wall4]);
+    //bouncyScene.spawn();
+    state.addScenes([titleScreen, tarotScene]);
     //state.addScene(bouncyScene);
     //state.addScene(collisionScene);
     console.log(gameState);

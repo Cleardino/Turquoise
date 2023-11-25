@@ -31,7 +31,7 @@ function run(timeStamp) {
     if(timeStamp < 1000) {
       dontRestrain = true;
     } else{
-      dontRestrain = false;
+      dontRestrain = true; //change to true to make it 144 fps, but it makes updates run faster so I have to fix that Misty
     }
     secsElapsed = (timeStamp - timeLastDrew)/1000;
     currentTime = timeStamp;
